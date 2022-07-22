@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/setup'
+
+begin
+  require 'dotenv/load'
+rescue LoadError => e
+  warn(e)
+end
+
+require 'fineract'
+
+Fineract::Api::Auth::BaseConfiguration.call(
+  username: ENV['FINERACT_API_USERNAME'],
+  password: ENV['FINERACT_API_PASSWORD'],
+  client_id: ENV['FINERACT_API_CLIENT_ID'],
+  client_secret: ENV['FINERACT_API_CLIENT_SECRET'],
+  tenant_id: ENV['FINERACT_API_TENANT_ID']
+
+)
+
+unless defined?(Rails)
+  # Mock Rails class for Flexirest logger
+  #   * Only necessary for standalone console session
+  # @api private
+  #
+  class Rails
+    class << self
+      attr_accessor :logger
+    end
+  end
+
+  Rails.logger = Logger.new(STDOUT)
+end
+
+begin
+  require 'pry'
+  Pry.start
+rescue LoadError => e
+  warn "#{e.message}\n Starting IRB"
+  require 'irb'
+  IRB.start
+end
+
+# @examples
+#   Mpesa::Api::C2B::RegisterUrls.create(ShortCode: '600335',ResponseType: 'Completed',ConfirmationURL: 'https://pesa-api.sandbox.kwara.com/callbacks/payment/confirmation',ValidationURL: 'https://pesa-api.sandbox.kwara.com/callbacks/payment/validation')
+#   Mpesa::Api::C2B::SimulatePayment.create(ShortCode: '600335', CommandID: 'CustomerPayBillOnline', Amount: '200', Msisdn: '254708374149', BillRefNumber: 'account')
+#   Mpesa::Api::Stk::PushPayment.create(business_short_code: '600335', amount: '1', phone_number: '254708374149', account_reference: 'Tests', transaction_desc: 'Testing')
+#   Mpesa::Api::B2C::PaymentRequest.create(phone_number: '254714665734', paybill: '600584', amount: 100, remarks: 'Testing', occassion: 'Test')
