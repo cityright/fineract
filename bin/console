@@ -1,23 +1,22 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
+require "bundler/setup"
 
 begin
-  require 'dotenv/load'
+  require "dotenv/load"
 rescue LoadError => e
   warn(e)
 end
 
-require 'fineract'
+require "fineract"
 
 Fineract::Api::Auth::BaseConfiguration.call(
-  username: ENV['FINERACT_API_USERNAME'],
-  password: ENV['FINERACT_API_PASSWORD'],
-  client_id: ENV['FINERACT_API_CLIENT_ID'],
-  client_secret: ENV['FINERACT_API_CLIENT_SECRET'],
-  tenant_id: ENV['FINERACT_API_TENANT_ID']
-
+  username: ENV["FINERACT_API_USERNAME"],
+  password: ENV["FINERACT_API_PASSWORD"],
+  client_id: ENV["FINERACT_API_CLIENT_ID"],
+  client_secret: ENV["FINERACT_API_CLIENT_SECRET"],
+  tenant_id: ENV["FINERACT_API_TENANT_ID"]
 )
 
 unless defined?(Rails)

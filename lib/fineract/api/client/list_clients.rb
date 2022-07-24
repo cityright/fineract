@@ -6,8 +6,6 @@ module Fineract
       #   Fineract::Api::Client::ListClients.all()
       #
       class ListClients < AuthorisedBase
-        before_request :camelize_params
-
         get :all, "/clients", rubify_names: true
       end
     end

@@ -11,7 +11,7 @@ module Fineract
           access_token = credentials[:auth_key]
 
           request.headers['Authorization'] = "Basic #{access_token}"
-          request.headers['Fineract-Platform-TenantId'] = Fineract::Api::Auth::Keys.tenant_id
+          request.headers['Fineract-Platform-TenantId'] = ENV["FINERACT_API_TENANT_ID"]
           
         end
       end
