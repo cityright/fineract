@@ -8,7 +8,6 @@ module Fineract
       #
       #
       class GetClient < AuthorisedBase
-        before_request :camelize_params
 
         get :find, "/clients/:id", rubify_names: true
       end
