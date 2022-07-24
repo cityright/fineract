@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in fineract_ruby.gemspec
+# Specify your gem's dependencies in fineract.gemspec
 gemspec
 
 gem "rake", "~> 13.0"
