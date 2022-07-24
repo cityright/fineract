@@ -22,7 +22,7 @@ module Fineract
         #   client_secret = Fineract::Api::Auth::Keys.client_secret
   
         #  request.headers['Authorization'] = "Basic #{token}".strip
-         request.headers['Fineract-Platform-TenantId'] = Fineract::Api::Auth::Keys.tenant_id
+         request.headers['Fineract-Platform-TenantId'] = ENV["FINERACT_API_TENANT_ID"]
          
         end
       end
