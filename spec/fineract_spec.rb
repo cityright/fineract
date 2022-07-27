@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe FineractRuby do
+RSpec.describe Fineract do
   it "has a version number" do
-    expect(FineractRuby::VERSION).not_to be nil
+    expect(Fineract::VERSION).not_to be nil
   end
 
   it "does something useful" do
