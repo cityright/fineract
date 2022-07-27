@@ -1,4 +1,4 @@
-# Fineract Ruby
+# Fineract
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fineract`. To experiment with that code, run `bin/console` for an interactive prompt.
 
@@ -22,9 +22,16 @@ Or install it yourself as:
 
 ## Usage
 
+Ensure you have added the constants in the `.env.example` to your `.env` file.
+
+
+
 TODO: Write usage instructions here
+Run `bin/console` for an interactive prompt.
+This configures the app using your fineract credentials and logs you into fineract.
+You should now be able to make any calls to the api for example.
 ```ruby
-client = FineractRuby::Client.new(base_url:, username:, password:)
+Fineract::Api::Client::ListClients.all()
 
 
 ```
