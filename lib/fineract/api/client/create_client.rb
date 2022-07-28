@@ -23,6 +23,3 @@ module Fineract
     end
   end
 end
-
-
-Fineract::Api::Client::CreateClient.create("firstname": "Johnny", "lastname": "Doed", "officeId": 1,"active": true, "dateFormat": "dd MMMM yyyy","locale": "en","activationDate": "04 July 2022")
