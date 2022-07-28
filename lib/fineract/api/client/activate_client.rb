@@ -8,7 +8,7 @@ module Fineract
       #
       #
       class ActivateClient < AuthorisedBase
-        post :create, "/clients/:id/?command=activate", rubify_names: true
+        post :create, "/clients/:id?command=activate", rubify_names: true
       end
     end
   end
