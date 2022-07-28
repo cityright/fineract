@@ -4,7 +4,7 @@ module Fineract
     module Api
       module Client
         # @example Client::ReactivateClient
-        # Fineract::Api::Client::ReactivateClient.create(id: 10, "withdrawalDate": "28 November 2022", "withdrawalReasonId": 17, "locale":"en", "dateFormat":"dd MMMM yyyy")
+        # Fineract::Api::Client::ReactivateClient.create(id: 10, "reactivationDate":"28 November 2014","locale":"en","dateFormat":"dd MMMM yyyy")
         #
         class ReactivateClient < AuthorisedBase
           post :create, "/clients/:id?command=reactivate", rubify_names: true
