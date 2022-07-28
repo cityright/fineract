@@ -9,7 +9,7 @@ module Fineract
         #
         class CloseClient < AuthorisedBase
         
-          post :create, "/clients/:id/?command=close", rubify_names: true
+          post :create, "/clients/:id?command=close", rubify_names: true
           
         end
       end

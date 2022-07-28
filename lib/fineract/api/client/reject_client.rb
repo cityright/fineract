@@ -9,7 +9,7 @@ module Fineract
         #
         class RejectClient < AuthorisedBase
         
-          post :create, "/clients/:id/?command=reject", rubify_names: true
+          post :create, "/clients/:id?command=reject", rubify_names: true
           
         end
       end
