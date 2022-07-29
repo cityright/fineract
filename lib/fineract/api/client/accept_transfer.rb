@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# rubocop:disable Layout/LineLength
+
 module Fineract
   module Api
     module Client
@@ -11,3 +15,4 @@ module Fineract
     end
   end
 end
+# rubocop:enable Layout/LineLength
