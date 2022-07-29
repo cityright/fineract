@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+module Fineract
+  module Api
+    module Client
+      # @example Client::ProposeTransfer
+      #   Fineract::Api::Client::ProposeTransfer.create(id:10, "transferDate":"28 August 2018","destinationOfficeId":"2","note":"Client Relocating to Bangalore")
+      #
+      #
+      class ProposeTransfer < AuthorisedBase
+        post :create, "/clients/:id?command=proposeTransfer", rubify_names: true
+      end
+    end
+  end
+end
