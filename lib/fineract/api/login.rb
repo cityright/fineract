@@ -6,7 +6,6 @@ module Fineract
     # @api public
     #
     class Login < Base
-
       post :create,
            "/authentication?username=#{ENV["FINERACT_API_USERNAME"]}&password=#{ENV["FINERACT_API_PASSWORD"]}"
       verbose!
