@@ -8,7 +8,6 @@ module Fineract
       #
       #
       class GetClient < AuthorisedBase
-
         get :find, "/clients/:id", rubify_names: true
       end
     end

@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# rubocop:disable Layout/LineLength
+
 require "bundler/setup"
 
 begin
@@ -30,15 +32,15 @@ unless defined?(Rails)
     end
   end
 
-  Rails.logger = Logger.new(STDOUT)
+  Rails.logger = Logger.new($stdout)
 end
 
 begin
-  require 'pry'
+  require "pry"
   Pry.start
 rescue LoadError => e
   warn "#{e.message}\n Starting IRB"
-  require 'irb'
+  require "irb"
   IRB.start
 end
 
@@ -47,3 +49,4 @@ end
 #   Mpesa::Api::C2B::SimulatePayment.create(ShortCode: '600335', CommandID: 'CustomerPayBillOnline', Amount: '200', Msisdn: '254708374149', BillRefNumber: 'account')
 #   Mpesa::Api::Stk::PushPayment.create(business_short_code: '600335', amount: '1', phone_number: '254708374149', account_reference: 'Tests', transaction_desc: 'Testing')
 #   Mpesa::Api::B2C::PaymentRequest.create(phone_number: '254714665734', paybill: '600584', amount: 100, remarks: 'Testing', occassion: 'Test')
+# rubocop:enable Layout/LineLength

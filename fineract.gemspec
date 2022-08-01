@@ -33,28 +33,28 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency 'activerecord', '~> 7.0', '>= 7.0.3.1'
-  spec.add_dependency 'activesupport', '~> 7.0', '>= 7.0.3.1'
-  spec.add_dependency 'attr_encrypted', '~> 3.1.0'
-  spec.add_dependency 'flexirest', '>=1.10.5'
-  spec.add_dependency 'tty-logger'
-  spec.add_dependency 'typhoeus'
-  spec.add_dependency 'zeitwerk'
-  spec.add_dependency 'request_store'
-  
-  spec.add_development_dependency 'activerecord-nulldb-adapter'
-  spec.add_development_dependency 'climate_control'
-  spec.add_development_dependency 'dotenv', '2.7.6'
-  spec.add_development_dependency 'factory_bot'
-  spec.add_development_dependency 'faker'
-  spec.add_development_dependency 'faker-bot'
-  spec.add_development_dependency 'guard-rspec'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'rack-test'
-  spec.add_development_dependency 'rspec', '~> 3.11'
-  spec.add_development_dependency 'rubocop-rspec'
-  spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'webmock', '~> 3.14'
+  spec.add_dependency "activerecord", "~> 7.0", ">= 7.0.3.1"
+  spec.add_dependency "activesupport", "~> 7.0", ">= 7.0.3.1"
+  spec.add_dependency "attr_encrypted", "~> 3.1.0"
+  spec.add_dependency "flexirest", ">=1.10.5"
+  spec.add_dependency "request_store"
+  spec.add_dependency "tty-logger"
+  spec.add_dependency "typhoeus"
+  spec.add_dependency "zeitwerk"
+
+  spec.add_development_dependency "activerecord-nulldb-adapter"
+  spec.add_development_dependency "climate_control"
+  spec.add_development_dependency "dotenv", "2.7.6"
+  spec.add_development_dependency "factory_bot"
+  spec.add_development_dependency "faker"
+  spec.add_development_dependency "faker-bot"
+  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "rack-test"
+  spec.add_development_dependency "rspec", "~> 3.11"
+  spec.add_development_dependency "rubocop-rspec"
+  spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "webmock", "~> 3.14"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
