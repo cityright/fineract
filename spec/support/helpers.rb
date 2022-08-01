@@ -9,7 +9,7 @@ module Helpers
     URI::HTTPS.build(
       host: ENV["FINERACT_API_HOSTNAME"],
       port: ENV["FINERACT_API_PORT"],
-      path: "/#{path}",
+      path: "#{path}",
       query: params.to_query
     ).to_s
   end
