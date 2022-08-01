@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
+# rubocop:disable Layout/LineLength
+
 require "spec_helper"
 
 RSpec.describe Fineract::Api::Login do
@@ -44,3 +47,5 @@ RSpec.describe Fineract::Api::Login do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
+# rubocop:enable Layout/LineLength
