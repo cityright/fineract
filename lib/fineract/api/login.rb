@@ -6,8 +6,7 @@ module Fineract
     # @api public
     #
     class Login < Base
-      # post :create, '/fineract-provider/api/oauth/token?grant_type=password'
-      # post :create, "/authentication"
+
       post :create,
            "/authentication?username=#{ENV["FINERACT_API_USERNAME"]}&password=#{ENV["FINERACT_API_PASSWORD"]}"
       verbose!
