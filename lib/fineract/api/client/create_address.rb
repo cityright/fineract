@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
 module Fineract
   module Api
     module Client
@@ -17,13 +16,13 @@ module Fineract
       #   "postalCode":"400064"
       #   }
       #   Fineract::Api::Client::CreateAddress.create(params)
-      #   
+      #
       #
       class CreateAddress < AuthorisedBase
         before_request :format_create_params
         post :create, "/client/:id/addresses"
 
-        def format_create_params(name, request)
+        def format_create_params(name, _request)
           return unless name == :create
 
           # params = HashWithIndifferentAccess.new(request.post_params)
@@ -35,4 +34,3 @@ module Fineract
     end
   end
 end
-# rubocop:enable Layout/LineLength
