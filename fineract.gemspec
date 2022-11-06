@@ -35,7 +35,6 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "activerecord", "~> 7.0", ">= 7.0.3.1"
   spec.add_dependency "activesupport", "~> 7.0", ">= 7.0.3.1"
-  spec.add_dependency "attr_encrypted", "~> 3.1.0"
   spec.add_dependency "flexirest", ">=1.10.5"
   spec.add_dependency "request_store"
   spec.add_dependency "tty-logger"

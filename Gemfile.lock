@@ -4,7 +4,6 @@ PATH
     fineract (0.1.0)
       activerecord (~> 7.0, >= 7.0.3.1)
       activesupport (~> 7.0, >= 7.0.3.1)
-      attr_encrypted (~> 3.1.0)
       flexirest (>= 1.10.5)
       request_store
       tty-logger
@@ -29,8 +28,6 @@ GEM
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ast (2.4.2)
-    attr_encrypted (3.1.0)
-      encryptor (~> 3.0.0)
     climate_control (1.2.0)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
@@ -39,7 +36,6 @@ GEM
     diff-lcs (1.5.0)
     docile (1.4.0)
     dotenv (2.7.6)
-    encryptor (3.0.0)
     equatable (0.7.0)
     ethon (0.15.0)
       ffi (>= 1.15.0)
