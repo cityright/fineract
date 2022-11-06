@@ -19,7 +19,6 @@ rescue LoadError => _e
 end
 
 require "active_record"
-require "attr_encrypted"
 require "flexirest"
 require "fineract/railtie" if defined?(Rails)
 require "request_store"
