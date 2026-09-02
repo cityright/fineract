@@ -1,61 +1,32 @@
 # frozen_string_literal: true
 
 require "simplecov"
-SimpleCov.start do
-  add_filter "/spec/"
-end
+SimpleCov.start { skip "/spec/" }
 
 require "bundler/setup"
-require "dotenv"
-Dotenv.load(".env.test")
-
-require "active_support/testing/time_helpers"
-require "climate_control"
-require "factory_bot"
-require "faker"
-require "pry"
-require "request_store"
-require "webmock/rspec"
-require_relative "support/helpers"
-
 require "fineract"
-# require_relative 'support/helpers'
-# require_relative 'support/custom_nullified_database'
-
-WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
-
-  config.include ActiveSupport::Testing::TimeHelpers
-  config.include FactoryBot::Syntax::Methods
-  config.include Helpers
-
-  config.before(:suite) do
-    FactoryBot.find_definitions
-  end
-
-  # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
+  config.expect_with(:rspec) { |expectations| expectations.syntax = :expect }
 
   config.before do
-    Fineract::Api::Auth::BaseConfiguration.call(
-      username: "Some Username",
-      password: "Some Password",
-      client_id: "Some Client ID",
-      client_secret: "Some Client Secret",
-      tenant_id: "Some Tenant ID"
-    )
-  end
-
-  config.before(:each) do
-    stub_request(:get, /localhost:8443/)
-      .with(headers: { "Accept" => "*/*", "User-Agent" => "Ruby" })
-      .to_return(status: 200, body: "stubbed response", headers: {})
+    Fineract.configure do |settings|
+      settings.base_url = "https://fineract.example.com/fineract-provider/api"
+      settings.api_version = "v1"
+      settings.tenant_id = "default"
+      settings.username = nil
+      settings.password = nil
+      settings.authentication = nil
+      settings.timeout = 10
+      settings.open_timeout = 5
+      settings.logger = nil
+      settings.adapter = Faraday.default_adapter
+      settings.retry_options = Fineract::DEFAULT_RETRY_OPTIONS
+      settings.verify_ssl = true
+      settings.user_agent = "fineract-ruby/#{Fineract::VERSION}"
+      settings.locale = nil
+      settings.date_format = nil
+    end
   end
 end

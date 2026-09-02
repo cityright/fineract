@@ -1,56 +1,99 @@
 # Fineract
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fineract`. To experiment with that code, run `bin/console` for an interactive prompt.
+A framework-agnostic Ruby client for Apache Fineract.
 
-TODO: Delete this and the text above, and describe your gem
+The 1.0 line requires Ruby 3.2 or newer and does not depend on Rails. It can be
+used from plain Ruby or any Ruby web framework.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add the gem to your Gemfile:
 
 ```ruby
-gem 'fineract'
+gem "fineract"
 ```
 
-And then execute:
+Then run `bundle install`.
 
-    $ bundle install
+## Configuration
 
-Or install it yourself as:
+Fineract never reads credentials or other settings from the environment on its
+own. Configure global defaults explicitly:
 
-    $ gem install fineract
-
-## Usage
-
-Ensure you have added the constants in the `.env.example` to your `.env` file.
-
-
-
-TODO: Write usage instructions here
-Run `bin/console` for an interactive prompt.
-This configures the app using your fineract credentials and logs you into fineract.
-You should now be able to make any calls to the api for example.
 ```ruby
-Fineract::Api::Client::ListClients.all()
+Fineract.configure do |config|
+  config.base_url = "https://fineract.example.com/fineract-provider/api"
+  config.tenant_id = "default"
+  config.username = ENV.fetch("FINERACT_USERNAME")
+  config.password = ENV.fetch("FINERACT_PASSWORD")
+  config.timeout = 10
+  config.open_timeout = 5
+end
 
-
+client = Fineract.client
 ```
 
+Applications that connect to multiple servers or tenants can create isolated
+clients. Explicit client options override global defaults and are copied when
+the client is created:
+
+```ruby
+client = Fineract::Client.new(
+  base_url: "https://another.example.com/fineract-provider/api",
+  tenant_id: "another-tenant",
+  username: ENV.fetch("ANOTHER_FINERACT_USERNAME"),
+  password: ENV.fetch("ANOTHER_FINERACT_PASSWORD")
+)
+```
+
+Invalid configuration raises `Fineract::ConfigurationError` immediately.
+`base_url` is required, accepts only HTTP(S) URLs without embedded
+credentials, and is normalized without trailing slashes.
+
+### Settings
+
+| Setting | Default | Description |
+| --- | --- | --- |
+| `base_url` | required | Fineract provider API root |
+| `api_version` | `"v1"` | API version appended by endpoint requests |
+| `tenant_id` | `"default"` | Fineract tenant identifier |
+| `username` | `nil` | Basic authentication username |
+| `password` | `nil` | Basic authentication password |
+| `authentication` | `nil` | Optional custom authentication strategy |
+| `timeout` | `10` | Read timeout in seconds |
+| `open_timeout` | `5` | Connection timeout in seconds |
+| `logger` | `nil` | Optional logger |
+| `adapter` | `Faraday.default_adapter` | Faraday adapter |
+| `retry_options` | conservative backoff | Options for idempotent-request retries |
+| `verify_ssl` | `true` | Verify server TLS certificates |
+| `user_agent` | gem name and version | HTTP User-Agent value |
+| `locale` | `nil` | Optional default Fineract locale |
+| `date_format` | `nil` | Optional default Fineract date format |
+
+The default retry options are:
+
+```ruby
+{
+  max: 2,
+  interval: 0.1,
+  interval_randomness: 0.5,
+  backoff_factor: 2
+}
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Run `bin/setup` after cloning the repository, then run:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```console
+$ bundle exec rake
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/fineract. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/fineract/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome at
+https://github.com/cityright/fineract.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the fineract project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/fineract/blob/master/CODE_OF_CONDUCT.md).
+The gem is available as open source under the terms of the MIT License.
