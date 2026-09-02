@@ -2,10 +2,13 @@
 
 require "dry/configurable"
 require "faraday"
+require "json"
 
 require_relative "fineract/version"
 require_relative "fineract/error"
 require_relative "fineract/configuration"
+require_relative "fineract/response"
+require_relative "fineract/transport"
 require_relative "fineract/client"
 
 # Public namespace for the Fineract Ruby client.
