@@ -1,4 +1,5 @@
 AllCops:
+  NewCops: disable
   SuggestExtensions: false
   TargetRubyVersion: 3.2
 
@@ -12,3 +13,26 @@ Style/StringLiteralsInInterpolation:
 
 Layout/LineLength:
   Max: 120
+
+Metrics/AbcSize:
+  Exclude:
+    - "test/**/*"
+
+Metrics/MethodLength:
+  Exclude:
+    - "test/**/*"
+
+Naming/VariableNumber:
+  Exclude:
+    - "test/**/*"
+
+Style/Documentation:
+  Exclude:
+    - "lib/fineract/api/client/create_client.rb"
+    - "lib/fineract/api/groups/create_group.rb"
+    - "lib/fineract/api/org/create_office.rb"
+    - "test/**/*"
+
+Style/RedundantReturn:
+  Exclude:
+    - "lib/fineract/api/client/create_address.rb"

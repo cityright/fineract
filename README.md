@@ -83,10 +83,32 @@ The default retry options are:
 
 ## Development
 
-Run `bin/setup` after cloning the repository, then run:
+Run `bin/setup` after cloning the repository. The default Rake task runs the
+Minitest suite, RuboCop, generated-file freshness, and endpoint conformance:
 
 ```console
 $ bundle exec rake
+```
+
+Regenerate the checked-in endpoint coverage artifact after changing an endpoint:
+
+```console
+$ bundle exec rake endpoints:report
+```
+
+### Integration tests
+
+Integration tests are opt-in and target a dedicated Apache Fineract 1.15.0 test
+deployment. Copy `.env.integration.example`, provide credentials, and export the
+values before running files under `test/integration`. The gem never loads the
+environment file itself.
+
+Destructive integration tests require both `FINERACT_DESTRUCTIVE=1` and
+`FINERACT_DEDICATED=1`. The test guard rejects shared demo hosts even when both
+flags are set. Add this guard at the start of every destructive test:
+
+```ruby
+IntegrationConfiguration.allow_destructive!
 ```
 
 ## Contributing
