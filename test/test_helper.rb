@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 
 require "simplecov"
-SimpleCov.start { skip "/spec/" }
+SimpleCov.start { skip "/test/" }
 
 require "bundler/setup"
+require "minitest/autorun"
 require "fineract"
 
-RSpec.configure do |config|
-  config.disable_monkey_patching!
-  config.expect_with(:rspec) { |expectations| expectations.syntax = :expect }
+module FineractTestHelper
+  def setup
+    super
+    reset_fineract_configuration
+  end
 
-  config.before do
+  def reset_fineract_configuration
     Fineract.configure do |settings|
       settings.base_url = "https://fineract.example.com/fineract-provider/api"
       settings.api_version = "v1"
@@ -28,5 +31,11 @@ RSpec.configure do |config|
       settings.locale = nil
       settings.date_format = nil
     end
+  end
+end
+
+module Minitest
+  class Test
+    include FineractTestHelper
   end
 end

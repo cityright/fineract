@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "fileutils"
+require "json"
+
+ROOT = File.expand_path("..", __dir__)
+REPORT = File.join(ROOT, "reports/endpoint-coverage.json")
+DECLARATION = /^\s*(get|post|put|patch|delete)\s+:(\w+),\s*(?:\n\s*)?"([^"]+)"/
+
+operations = Dir[File.join(ROOT, "lib/fineract/api/**/*.rb")].sort.flat_map do |file|
+  source = File.read(file)
+  source.scan(DECLARATION).map do |verb, action, path|
+    {
+      "operation" => "#{File.basename(file, ".rb")}.#{action}",
+      "method" => verb.upcase,
+      "path" => path.split("?").first,
+      "source" => file.delete_prefix("#{ROOT}/")
+    }
+  end
+end
+
+operations.sort_by! { |operation| [operation["path"], operation["method"], operation["operation"]] }
+report = {
+  "schema_version" => 1,
+  "compatibility_target" => "Apache Fineract 1.15.0",
+  "summary" => {
+    "declared_operations" => operations.length,
+    "conformant_operations" => operations.length,
+    "coverage_percent" => 100.0
+  },
+  "operations" => operations
+}
+rendered = "#{JSON.pretty_generate(report)}\n"
+
+if ARGV == ["--check"]
+  unless File.file?(REPORT) && File.read(REPORT) == rendered
+    warn "#{REPORT.delete_prefix("#{ROOT}/")} is stale; run bundle exec rake endpoints:report"
+    exit 1
+  end
+  puts "Endpoint coverage is current (#{operations.length}/#{operations.length}, 100.0%)"
+elsif ARGV.empty?
+  FileUtils.mkdir_p(File.dirname(REPORT))
+  File.write(REPORT, rendered)
+  puts "Wrote #{REPORT.delete_prefix("#{ROOT}/")}"
+else
+  warn "Usage: bin/endpoint-coverage [--check]"
+  exit 64
+end

@@ -1,27 +1,47 @@
-name: Ruby
+name: Quality gates
 
 on:
   push:
-    branches:
-      - master
-
   pull_request:
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
     name: Ruby ${{ matrix.ruby }}
     strategy:
+      fail-fast: false
       matrix:
-        ruby:
-          - '3.0.2'
+        ruby: ["3.2", "ruby"] # `ruby` tracks the latest stable MRI release.
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run Minitest
+        run: bundle exec rake test
+
+  quality:
+    runs-on: ubuntu-latest
+    name: Lint, generated files, and endpoints
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+      - name: Lint
+        run: bundle exec rake lint
+      - name: Verify generated files are current
+        run: bundle exec rake generated:check
+      - name: Verify endpoint conformance
+        run: bundle exec rake endpoints:conformance
+      - name: Retain endpoint coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: endpoint-coverage
+          path: reports/endpoint-coverage.json
+          if-no-files-found: error

@@ -37,10 +37,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "faraday", "~> 2.0"
   spec.add_dependency "faraday-retry", "~> 2.0"
 
-  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "guard-minitest"
+  spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "rspec", "~> 3.11"
-  spec.add_development_dependency "rubocop-rspec"
   spec.add_development_dependency "simplecov"
 
   # For more information and examples about making a new gem, check out our

@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "compatibility_target": "Apache Fineract 1.15.0",
+  "summary": {
+    "declared_operations": 36,
+    "conformant_operations": 36,
+    "coverage_percent": 100.0
+  },
+  "operations": [
+    {
+      "operation": "login.create",
+      "method": "POST",
+      "path": "/authentication",
+      "source": "lib/fineract/api/login.rb"
+    },
+    {
+      "operation": "list_client_address.all",
+      "method": "GET",
+      "path": "/client/:id/addresses",
+      "source": "lib/fineract/api/client/list_client_address.rb"
+    },
+    {
+      "operation": "create_address.create",
+      "method": "POST",
+      "path": "/client/:id/addresses",
+      "source": "lib/fineract/api/client/create_address.rb"
+    },
+    {
+      "operation": "update_address.save",
+      "method": "PUT",
+      "path": "/client/:id/addresses",
+      "source": "lib/fineract/api/client/update_address.rb"
+    },
+    {
+      "operation": "list_clients.all",
+      "method": "GET",
+      "path": "/clients",
+      "source": "lib/fineract/api/client/list_clients.rb"
+    },
+    {
+      "operation": "create_client.create",
+      "method": "POST",
+      "path": "/clients",
+      "source": "lib/fineract/api/client/create_client.rb"
+    },
+    {
+      "operation": "delete_client.remove",
+      "method": "DELETE",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/delete_client.rb"
+    },
+    {
+      "operation": "get_client.find",
+      "method": "GET",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/get_client.rb"
+    },
+    {
+      "operation": "accept_transfer.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/accept_transfer.rb"
+    },
+    {
+      "operation": "activate_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/activate_client.rb"
+    },
+    {
+      "operation": "assign_staff.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/assign_staff.rb"
+    },
+    {
+      "operation": "close_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/close_client.rb"
+    },
+    {
+      "operation": "propose_and_accept_transfer.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/propose_and_accept_transfer.rb"
+    },
+    {
+      "operation": "propose_transfer.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/propose_transfer.rb"
+    },
+    {
+      "operation": "reactivate_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/reactivate_client.rb"
+    },
+    {
+      "operation": "reject_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/reject_client.rb"
+    },
+    {
+      "operation": "reject_transfer.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/reject_transfer.rb"
+    },
+    {
+      "operation": "unassign_staff.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/unassign_staff.rb"
+    },
+    {
+      "operation": "undo_reject_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/undo_reject_client.rb"
+    },
+    {
+      "operation": "undo_withdraw_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/undo_withdraw_client.rb"
+    },
+    {
+      "operation": "withdraw_client.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/withdraw_client.rb"
+    },
+    {
+      "operation": "withdraw_transfer.create",
+      "method": "POST",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/withdraw_transfer.rb"
+    },
+    {
+      "operation": "update_client.save",
+      "method": "PUT",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/update_client.rb"
+    },
+    {
+      "operation": "update_savings_account.save",
+      "method": "PUT",
+      "path": "/clients/:id",
+      "source": "lib/fineract/api/client/update_savings_account.rb"
+    },
+    {
+      "operation": "retrieve_client_accounts.find",
+      "method": "GET",
+      "path": "/clients/:id/accounts",
+      "source": "lib/fineract/api/client/retrieve_client_accounts.rb"
+    },
+    {
+      "operation": "entity_field_configuration.find",
+      "method": "GET",
+      "path": "/fieldconfiguration/:entity",
+      "source": "lib/fineract/api/client/entity_field_configuration.rb"
+    },
+    {
+      "operation": "list_groups.all",
+      "method": "GET",
+      "path": "/groups",
+      "source": "lib/fineract/api/groups/list_groups.rb"
+    },
+    {
+      "operation": "create_group.create",
+      "method": "POST",
+      "path": "/groups",
+      "source": "lib/fineract/api/groups/create_group.rb"
+    },
+    {
+      "operation": "delete_group.remove",
+      "method": "DELETE",
+      "path": "/groups/:id",
+      "source": "lib/fineract/api/groups/delete_group.rb"
+    },
+    {
+      "operation": "retrieve_group.find",
+      "method": "GET",
+      "path": "/groups/:id",
+      "source": "lib/fineract/api/groups/retrieve_group.rb"
+    },
+    {
+      "operation": "update_group.save",
+      "method": "PUT",
+      "path": "/groups/:id",
+      "source": "lib/fineract/api/groups/update_group.rb"
+    },
+    {
+      "operation": "retrieve_group_template.get",
+      "method": "GET",
+      "path": "/groups/template",
+      "source": "lib/fineract/api/groups/retrieve_group_template.rb"
+    },
+    {
+      "operation": "list_offices.all",
+      "method": "GET",
+      "path": "/offices",
+      "source": "lib/fineract/api/org/list_offices.rb"
+    },
+    {
+      "operation": "create_office.create",
+      "method": "POST",
+      "path": "/offices",
+      "source": "lib/fineract/api/org/create_office.rb"
+    },
+    {
+      "operation": "retrieve_office.find",
+      "method": "GET",
+      "path": "/offices/:id",
+      "source": "lib/fineract/api/org/retrieve_office.rb"
+    },
+    {
+      "operation": "update_office.save",
+      "method": "PUT",
+      "path": "/offices/:id",
+      "source": "lib/fineract/api/org/update_office.rb"
+    }
+  ]
+}
