@@ -223,5 +223,65 @@
       "path": "/offices/:id",
       "source": "lib/fineract/api/org/update_office.rb"
     }
-  ]
+  ],
+  "resource_methods": {
+    "organization.staff": [
+      "retrieveAllStaff",
+      "createStaff",
+      "getBulkTemplateStaff",
+      "postTemplate",
+      "retrieveOneStaff",
+      "updateStaff"
+    ],
+    "organization.holidays": [
+      "retrieveAllHolidays",
+      "createHoliday",
+      "retrieveRepaymentScheduleUpdationTyeOptions",
+      "retrieveOneHoliday",
+      "handleCommandsHoliday",
+      "updateHoliday",
+      "deleteHoliday"
+    ],
+    "organization.working_days": [
+      "retrieveAllWorkingDays",
+      "updateWorkingDay",
+      "retrieveTemplateWorkingDays"
+    ],
+    "organization.currencies": [
+      "retrieveCurrencies",
+      "updateCurrencies"
+    ],
+    "organization.funds": [
+      "retrieveFunds",
+      "createFund",
+      "retrieveFund",
+      "updateFund"
+    ],
+    "organization.charges": [
+      "retrieveAllCharges",
+      "createCharge",
+      "retrieveTemplateCharge",
+      "retrieveOneCharge",
+      "updateCharge",
+      "deleteCharge"
+    ],
+    "organization.codes": [
+      "retrieveAllCodes",
+      "createCode",
+      "retrieveOneCodeByName",
+      "retrieveAllCodeValuesByCodeName",
+      "createCodeValueByCodeName",
+      "deleteCodeValue_1",
+      "retrieveCodeValue_1",
+      "updateCodeValueByCodeName",
+      "deleteCode",
+      "retrieveOneCode",
+      "updateCode",
+      "retrieveAllCodeValues",
+      "createCodeValue",
+      "deleteCodeValue",
+      "retrieveCodeValue",
+      "updateCodeValue"
+    ]
+  }
 }

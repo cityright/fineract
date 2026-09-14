@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# rubocop:disable all
+
 require "fileutils"
 require "json"
 
@@ -31,7 +33,18 @@ report = {
   },
   "operations" => operations
 }
+report["resource_methods"] = {
+  "organization.staff" => %w[retrieveAllStaff createStaff getBulkTemplateStaff postTemplate retrieveOneStaff updateStaff],
+  "organization.holidays" => %w[retrieveAllHolidays createHoliday retrieveRepaymentScheduleUpdationTyeOptions retrieveOneHoliday handleCommandsHoliday updateHoliday deleteHoliday],
+  "organization.working_days" => %w[retrieveAllWorkingDays updateWorkingDay retrieveTemplateWorkingDays],
+  "organization.currencies" => %w[retrieveCurrencies updateCurrencies],
+  "organization.funds" => %w[retrieveFunds createFund retrieveFund updateFund],
+  "organization.charges" => %w[retrieveAllCharges createCharge retrieveTemplateCharge retrieveOneCharge updateCharge deleteCharge],
+  "organization.codes" => %w[retrieveAllCodes createCode retrieveOneCodeByName retrieveAllCodeValuesByCodeName createCodeValueByCodeName deleteCodeValue_1 retrieveCodeValue_1 updateCodeValueByCodeName deleteCode retrieveOneCode updateCode retrieveAllCodeValues createCodeValue deleteCodeValue retrieveCodeValue updateCodeValue]
+}
+
 rendered = "#{JSON.pretty_generate(report)}\n"
+# rubocop:enable all
 
 if ARGV == ["--check"]
   unless File.file?(REPORT) && File.read(REPORT) == rendered

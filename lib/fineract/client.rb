@@ -3,17 +3,19 @@
 module Fineract
   # A client with an immutable, independently validated configuration.
   class Client
-    attr_reader :configuration, :transport, :security_administration, :platform_administration
+    attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization
 
     def initialize(**options)
       @configuration = Configuration.new(Fineract.config.to_h.merge(options))
       @transport = Transport.new(@configuration)
       @security_administration = SecurityAdministration.new(self)
       @platform_administration = PlatformAdministration.new(self)
+      @organization = Organization.new(self)
     end
 
     alias security security_administration
     alias administration platform_administration
+    alias org organization
     %i[users roles permissions password_preferences two_factor].each do |name|
       define_method(name) { security_administration.public_send(name) }
     end
