@@ -16,6 +16,8 @@ module Fineract
     end
   end
 
+  class UnknownOperationError < ValidationError; end
+
   # Network or HTTP transport failure.
   class TransportError < Error
     attr_reader :cause

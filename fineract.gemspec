@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = spec.homepage
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["lib/**/*", "sig/**/*", "CHANGELOG.md", "CODE_OF_CONDUCT.md",
+    Dir["lib/**/*", "sig/**/*", "specifications/*.json", "CHANGELOG.md", "CODE_OF_CONDUCT.md",
         "LICENSE.txt", "README.md"].select { |path| File.file?(path) }
   end
   spec.bindir = "exe"

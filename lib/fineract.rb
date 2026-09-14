@@ -11,6 +11,7 @@ require_relative "fineract/authentication"
 require_relative "fineract/configuration"
 require_relative "fineract/response"
 require_relative "fineract/transport"
+require_relative "fineract/catalog"
 require_relative "fineract/client"
 
 # Public namespace for the Fineract Ruby client.

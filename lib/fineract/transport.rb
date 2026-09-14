@@ -105,21 +105,24 @@ module Fineract
     def encode_body(body, type, headers)
       return nil if body.nil?
 
-      case type.to_sym
-      when :json
+      media = type.to_s.downcase
+      headers["Content-Type"] ||= type.to_s unless %w[json form multipart binary text csv].include?(media) || media.include?("multipart/form-data")
+      case
+      when media == "json" || media.include?("json")
         headers["Content-Type"] ||= "application/json"
-        JSON.generate(body)
-      when :form
+        body.is_a?(String) ? body : JSON.generate(body)
+      when media == "form" || media.include?("x-www-form-urlencoded")
         headers["Content-Type"] ||= "application/x-www-form-urlencoded"
         Faraday::Utils.build_nested_query(body)
-      when :multipart then encode_multipart(body, headers)
-      when :binary
+      when media == "multipart" || media.include?("multipart/form-data") then encode_multipart(body, headers)
+      when media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/", "video/")
         headers["Content-Type"] ||= "application/octet-stream"
         body.respond_to?(:read) ? body.read : body.to_s
-      when :text, :csv
-        headers["Content-Type"] ||= type.to_sym == :csv ? "text/csv" : "text/plain"
+      when media == "text" || media == "csv" || media.start_with?("text/")
+        headers["Content-Type"] ||= media == "csv" ? "text/csv" : "text/plain"
         body.to_s
-      else raise ArgumentError, "unsupported request type: #{type}"
+      else
+        body.is_a?(String) ? body : JSON.generate(body)
       end
     end
 
@@ -171,10 +174,11 @@ module Fineract
 
     def build_response(raw, explicit_type)
       body = raw.body
-      type = explicit_type&.to_sym || inferred_response_type(raw.headers["content-type"], body)
-      data = case type
-             when :empty then nil
-             when :json
+      type = explicit_type || inferred_response_type(raw.headers["content-type"], body)
+      media = type.to_s.downcase
+      data = case
+             when media == "empty" then nil
+             when media == "json" || media.include?("json")
                begin
                  JSON.parse(body.to_s)
                rescue JSON::ParserError => e
@@ -185,9 +189,9 @@ module Fineract
 
                  body
                end
-             when :binary then body.to_s.b
-             when :text, :csv then body.to_s
-             else raise ArgumentError, "unsupported response type: #{type}"
+             when media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/", "video/") then body.to_s.b
+             when media == "text" || media == "csv" || media.start_with?("text/") || media.include?("xml") then body.to_s
+             else body.to_s
              end
       Response.new(status: raw.status, headers: raw.headers, data: data, body: body)
     end
