@@ -15,9 +15,11 @@ require_relative "fineract/transport"
 require_relative "fineract/catalog"
 require_relative "fineract/resource"
 require_relative "fineract/contracts/organization"
+require_relative "fineract/contracts/term_deposits"
 require_relative "fineract/security_administration"
 require_relative "fineract/platform_administration"
 require_relative "fineract/organization"
+require_relative "fineract/term_deposits"
 require_relative "fineract/client"
 
 # Public namespace for the Fineract Ruby client.

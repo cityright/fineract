@@ -282,6 +282,61 @@
       "deleteCodeValue",
       "retrieveCodeValue",
       "updateCodeValue"
+    ],
+    "fixed_deposits.products": [
+      "retrieveAllFixedDepositProducts",
+      "createFixedDepositProduct",
+      "retrieveTemplateFixedDepositProduct",
+      "deleteFixedDepositProduct",
+      "retrieveOneFixedDepositProduct",
+      "updateFixedDepositProduct"
+    ],
+    "fixed_deposits.accounts": [
+      "retrieveAllFixedDepositAccounts",
+      "createFixedDepositAccount",
+      "calculateFixedDepositInterest",
+      "getFixedDepositTemplate",
+      "retrieveTemplateFixedDepositAccount",
+      "deleteFixedDepositAccount",
+      "retrieveOneFixedDepositAccount",
+      "handleCommandsFixedDepositAccount",
+      "updateFixedDepositAccount"
+    ],
+    "fixed_deposits.transactions": [
+      "retrieveAllFixedDepositAccountTransactions",
+      "transaction",
+      "retrieveTemplateFixedDepositAccountTransaction",
+      "retrieveOneFixedDepositAccountTransaction",
+      "handleCommandsFixedDepositAccountTransaction",
+      "getFixedDepositTransactionTemplate",
+      "postFixedDepositTransactionTemplate"
+    ],
+    "recurring_deposits.products": [
+      "retrieveAllRecurringDepositProducts",
+      "createRecurringDepositProduct",
+      "retrieveTemplateRecurringDepositProduct",
+      "deleteRecurringDepositProduct",
+      "retrieveOneRecurringDepositProduct",
+      "updateRecurringDepositProduct"
+    ],
+    "recurring_deposits.accounts": [
+      "retrieveAllRecurringDepositAccounts",
+      "submitApplicationRecurringDepositAccount",
+      "getRecurringDepositTemplate",
+      "retrieveTemplateRecurringDepositAccount",
+      "deleteRecurringDepositAccount",
+      "retrieveOneRecurringDepositAccount",
+      "handleCommandsRecurringDepositAccount",
+      "updateRecurringDepositAccount",
+      "accountClosureTemplateRecurringDepositAccount"
+    ],
+    "recurring_deposits.transactions": [
+      "transactionRecurringDepositAccountTransaction",
+      "retrieveTemplateRecurringDepositAccountTransaction",
+      "retrieveOneRecurringDepositAccountTransaction",
+      "handleCommandsRecurringDepositAccountTransaction",
+      "getRecurringDepositTransactionTemplate",
+      "postRecurringDepositTransactionsTemplate"
     ]
   }
 }

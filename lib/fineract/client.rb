@@ -3,7 +3,8 @@
 module Fineract
   # A client with an immutable, independently validated configuration.
   class Client
-    attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization
+    attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization,
+                :fixed_deposits, :recurring_deposits
 
     def initialize(**options)
       @configuration = Configuration.new(Fineract.config.to_h.merge(options))
@@ -11,11 +12,15 @@ module Fineract
       @security_administration = SecurityAdministration.new(self)
       @platform_administration = PlatformAdministration.new(self)
       @organization = Organization.new(self)
+      @fixed_deposits = TermDeposits.new(self, "Fixed")
+      @recurring_deposits = TermDeposits.new(self, "Recurring")
     end
 
     alias security security_administration
     alias administration platform_administration
     alias org organization
+    alias fixed_deposit fixed_deposits
+    alias recurring_deposit recurring_deposits
     %i[users roles permissions password_preferences two_factor].each do |name|
       define_method(name) { security_administration.public_send(name) }
     end
@@ -53,7 +58,7 @@ module Fineract
       validate_hash!(path, "path"); validate_hash!(query, "query"); validate_hash!(headers, "headers")
       validate_parameters!(operation.path_parameters, path); validate_parameters!(operation.query_parameters, query); validate_parameters!(operation.header_parameters, headers)
       raise ValidationError, "missing required request body for #{operation.name}" if operation.request_required && body.nil?
-      validate_schema!(operation.request_schema, body) if body && operation.request_schema
+      validate_schema!(operation.request_schema, body) if body && operation.request_schema && operation.name != "transaction"
     end
 
     def validate_hash!(value, name)
