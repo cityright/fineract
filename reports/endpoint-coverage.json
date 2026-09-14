@@ -337,6 +337,70 @@
       "handleCommandsRecurringDepositAccountTransaction",
       "getRecurringDepositTransactionTemplate",
       "postRecurringDepositTransactionsTemplate"
+    ],
+    "provisioning.criteria": [
+      "retrieveAllProvisioningCriteria",
+      "createProvisioningCriteria",
+      "retrieveTemplate_1",
+      "retrieveOneProvisioningCriteria",
+      "updateProvisioningCriteria",
+      "deleteProvisioningCriteria"
+    ],
+    "provisioning.entries": [
+      "retrieveAllProvisioningEntries",
+      "createProvisioningEntries",
+      "retrieveProvisioningEntriesLoanProducts",
+      "retrieveOneProvisioningEntry",
+      "modifyProvisioningEntry"
+    ],
+    "taxes.components": [
+      "retrieveAllTaxComponents",
+      "createTaxComponent",
+      "retrieveTemplateTaxComponent",
+      "retrieveOneTaxComponent",
+      "updateTaxComponent"
+    ],
+    "taxes.groups": [
+      "retrieveAllTaxGroups",
+      "createTaxGroup",
+      "retrieveTemplateTaxGroup",
+      "retrieveOneTaxGroup",
+      "updateTaxGroup"
+    ],
+    "payment_types": [
+      "getAllPaymentTypes",
+      "createPaymentType",
+      "retrieveOnePaymentType",
+      "updatePaymentType",
+      "deleteCodePaymentType"
+    ],
+    "floating_rates": [
+      "retrieveAllFloatingRates",
+      "createFloatingRate",
+      "retrieveOneFloatingRate",
+      "updateFloatingRate"
+    ],
+    "rates": [
+      "retrieveAllRates",
+      "createRate",
+      "retrieveOneRate",
+      "updateRate"
+    ],
+    "interest_rate_charts": [
+      "retrieveAllInterestRateCharts",
+      "createInterestRateChart",
+      "retrieveTemplateInterestRateChart",
+      "retrieveOneInterestRateChart",
+      "updateInterestRateChart",
+      "deleteInterestRateChart"
+    ],
+    "interest_rate_charts.slabs": [
+      "retrieveAllInterestRateChartSlabs",
+      "createInterestRateChartSlab",
+      "retrieveTemplateInterestRateChartSlab",
+      "retrieveOneInterestRateChartSlab",
+      "updateInterestRateChartSlab",
+      "deleteInterestRateChartSlab"
     ]
   }
 }

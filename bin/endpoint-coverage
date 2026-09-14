@@ -46,7 +46,16 @@ report["resource_methods"] = {
   "fixed_deposits.transactions" => %w[retrieveAllFixedDepositAccountTransactions transaction retrieveTemplateFixedDepositAccountTransaction retrieveOneFixedDepositAccountTransaction handleCommandsFixedDepositAccountTransaction getFixedDepositTransactionTemplate postFixedDepositTransactionTemplate],
   "recurring_deposits.products" => %w[retrieveAllRecurringDepositProducts createRecurringDepositProduct retrieveTemplateRecurringDepositProduct deleteRecurringDepositProduct retrieveOneRecurringDepositProduct updateRecurringDepositProduct],
   "recurring_deposits.accounts" => %w[retrieveAllRecurringDepositAccounts submitApplicationRecurringDepositAccount getRecurringDepositTemplate retrieveTemplateRecurringDepositAccount deleteRecurringDepositAccount retrieveOneRecurringDepositAccount handleCommandsRecurringDepositAccount updateRecurringDepositAccount accountClosureTemplateRecurringDepositAccount],
-  "recurring_deposits.transactions" => %w[transactionRecurringDepositAccountTransaction retrieveTemplateRecurringDepositAccountTransaction retrieveOneRecurringDepositAccountTransaction handleCommandsRecurringDepositAccountTransaction getRecurringDepositTransactionTemplate postRecurringDepositTransactionsTemplate]
+  "recurring_deposits.transactions" => %w[transactionRecurringDepositAccountTransaction retrieveTemplateRecurringDepositAccountTransaction retrieveOneRecurringDepositAccountTransaction handleCommandsRecurringDepositAccountTransaction getRecurringDepositTransactionTemplate postRecurringDepositTransactionsTemplate],
+  "provisioning.criteria" => %w[retrieveAllProvisioningCriteria createProvisioningCriteria retrieveTemplate_1 retrieveOneProvisioningCriteria updateProvisioningCriteria deleteProvisioningCriteria],
+  "provisioning.entries" => %w[retrieveAllProvisioningEntries createProvisioningEntries retrieveProvisioningEntriesLoanProducts retrieveOneProvisioningEntry modifyProvisioningEntry],
+  "taxes.components" => %w[retrieveAllTaxComponents createTaxComponent retrieveTemplateTaxComponent retrieveOneTaxComponent updateTaxComponent],
+  "taxes.groups" => %w[retrieveAllTaxGroups createTaxGroup retrieveTemplateTaxGroup retrieveOneTaxGroup updateTaxGroup],
+  "payment_types" => %w[getAllPaymentTypes createPaymentType retrieveOnePaymentType updatePaymentType deleteCodePaymentType],
+  "floating_rates" => %w[retrieveAllFloatingRates createFloatingRate retrieveOneFloatingRate updateFloatingRate],
+  "rates" => %w[retrieveAllRates createRate retrieveOneRate updateRate],
+  "interest_rate_charts" => %w[retrieveAllInterestRateCharts createInterestRateChart retrieveTemplateInterestRateChart retrieveOneInterestRateChart updateInterestRateChart deleteInterestRateChart],
+  "interest_rate_charts.slabs" => %w[retrieveAllInterestRateChartSlabs createInterestRateChartSlab retrieveTemplateInterestRateChartSlab retrieveOneInterestRateChartSlab updateInterestRateChartSlab deleteInterestRateChartSlab],
 }
 
 rendered = "#{JSON.pretty_generate(report)}\n"

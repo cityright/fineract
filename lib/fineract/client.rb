@@ -24,6 +24,12 @@ module Fineract
       @account_transfers = AccountTransfers.new(self)
       @reporting = Reporting.new(self)
       @search = Search.new(self)
+      @provisioning = Provisioning.new(self)
+      @taxes = Taxes.new(self)
+      @payment_types = PaymentTypes.new(self)
+      @floating_rates = FloatingRates.new(self)
+      @rates = Rates.new(self)
+      @interest_rate_charts = InterestRateCharts.new(self)
     end
 
     alias security security_administration
