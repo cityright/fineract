@@ -20,6 +20,8 @@ module FineractTestHelper
       settings.tenant_id = "default"
       settings.username = nil
       settings.password = nil
+      settings.basic_key = nil
+      settings.bearer_token = nil
       settings.authentication = nil
       settings.timeout = 10
       settings.open_timeout = 5

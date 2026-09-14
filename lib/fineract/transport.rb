@@ -19,8 +19,8 @@ module Fineract
       @connection = build_connection
     end
 
-    def request(method, path, path_params: {}, query: {}, body: nil, headers: {},
-                request_type: :json, response_type: nil, idempotent: nil, idempotency_key: nil)
+    def perform_request(method, path, path_params: {}, query: {}, body: nil, headers: {},
+                        request_type: :json, response_type: nil, idempotent: nil, idempotency_key: nil)
       method = method.to_sym
       raise ArgumentError, "unsupported HTTP method: #{method}" unless METHODS.include?(method)
 
@@ -38,6 +38,19 @@ module Fineract
         end.tap { |result| log_response(result) }
       end
       build_response(raw, response_type)
+    end
+
+    def request(method, path, **options)
+      response = perform_request(method, path, **options)
+      return Fineract::Success.new(response) if response.success?
+
+      Fineract::Failure.new(Fineract::ApiError.new(status: response.status, payload: response.data, response: response))
+    rescue Fineract::SerializationError => e
+      Fineract::Failure.new(e)
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::Error => e
+      Fineract::Failure.new(Fineract::TransportError.new(cause: e))
+    rescue ArgumentError, TypeError => e
+      Fineract::Failure.new(Fineract::ValidationError.new(e.message, details: e))
     end
 
     METHODS.each do |verb|
@@ -72,11 +85,16 @@ module Fineract
     def default_headers
       headers = { "Accept" => "application/json", "User-Agent" => configuration.user_agent,
                   "Fineract-Platform-TenantId" => configuration.tenant_id }
-      if configuration.username
-        credentials = ["#{configuration.username}:#{configuration.password}"].pack("m0")
-        headers["Authorization"] = "Basic #{credentials}"
-      end
-      configuration.authentication&.apply(Struct.new(:headers).new(headers))
+      strategy = configuration.authentication ||
+                 if configuration.basic_key
+                   Fineract::Authentication::BasicKey.new(configuration.basic_key)
+                 elsif configuration.bearer_token
+                   Fineract::Authentication::Bearer.new(configuration.bearer_token)
+                 elsif configuration.username
+                   Fineract::Authentication::Basic.new(configuration.username, configuration.password)
+                 end
+      strategy&.apply(Struct.new(:headers).new(headers))
+      headers["Fineract-Platform-TenantId"] = configuration.tenant_id
       headers
     end
 
@@ -156,7 +174,17 @@ module Fineract
       type = explicit_type&.to_sym || inferred_response_type(raw.headers["content-type"], body)
       data = case type
              when :empty then nil
-             when :json then JSON.parse(body.to_s)
+             when :json
+               begin
+                 JSON.parse(body.to_s)
+               rescue JSON::ParserError => e
+                 unless raw.status >= 400
+                   raise Fineract::SerializationError.new("invalid JSON response", body: body,
+                                                                                   cause: e)
+                 end
+
+                 body
+               end
              when :binary then body.to_s.b
              when :text, :csv then body.to_s
              else raise ArgumentError, "unsupported response type: #{type}"

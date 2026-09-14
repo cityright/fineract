@@ -6,6 +6,8 @@ require "json"
 
 require_relative "fineract/version"
 require_relative "fineract/error"
+require_relative "fineract/result"
+require_relative "fineract/authentication"
 require_relative "fineract/configuration"
 require_relative "fineract/response"
 require_relative "fineract/transport"
@@ -27,6 +29,10 @@ module Fineract
   setting :tenant_id, default: "default"
   setting :username, default: nil
   setting :password, default: nil
+  setting :basic_key, default: nil
+  setting :bearer_token, default: nil
+  setting :basic_key, default: nil
+  setting :bearer_token, default: nil
   setting :authentication, default: nil
   setting :timeout, default: 10
   setting :open_timeout, default: 5

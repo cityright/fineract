@@ -18,6 +18,8 @@ module Fineract
     attribute :tenant_id, Types::Strict::String
     attribute :username, Types::Strict::String.optional
     attribute :password, Types::Strict::String.optional
+    attribute :basic_key, Types::Strict::String.optional
+    attribute :bearer_token, Types::Strict::String.optional
     attribute :authentication, Types::Any.optional
     attribute :timeout, Types::Strict::Integer | Types::Strict::Float
     attribute :open_timeout, Types::Strict::Integer | Types::Strict::Float
@@ -56,6 +58,7 @@ module Fineract
 
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def self.validate!(attributes)
       validate_non_empty!(attributes, :api_version, :tenant_id, :user_agent)
       validate_positive_number!(attributes, :timeout, :open_timeout)
@@ -64,11 +67,21 @@ module Fineract
         raise ConfigurationError, "username and password must be provided together"
       end
 
+      configured = [attributes[:authentication], attributes[:basic_key], attributes[:bearer_token],
+                    attributes[:username]].compact
+      raise ConfigurationError, "only one authentication strategy may be configured" if configured.size > 1
+      if attributes[:authentication] && !attributes[:authentication].respond_to?(:apply)
+        raise ConfigurationError, "authentication must respond to apply(request)"
+      end
+
+      validate_non_empty_optional!(attributes, :basic_key, :bearer_token)
+
       return if attributes[:retry_options].is_a?(Hash)
 
       raise ConfigurationError, "retry_options must be a Hash"
     end
 
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
     def self.validate_non_empty!(attributes, *names)
       names.each do |name|
         value = attributes[name]
@@ -83,7 +96,16 @@ module Fineract
       end
     end
 
+    def self.validate_non_empty_optional!(attributes, *names)
+      names.each do |name|
+        value = attributes[name]
+        next if value.nil? || (value.is_a?(String) && !value.empty?)
+
+        raise ConfigurationError, "#{name} must be a non-empty String"
+      end
+    end
+
     private_class_method :normalize_base_url, :validate!, :validate_non_empty!,
-                         :validate_positive_number!
+                         :validate_positive_number!, :validate_non_empty_optional!
   end
 end
