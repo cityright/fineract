@@ -18,6 +18,17 @@ class IntegrationConfigurationTest < Minitest::Test
     assert_equal "isolated-test", options[:tenant_id]
   end
 
+  def test_accepts_legacy_api_prefixed_credential_variables
+    environment = base_environment.slice("FINERACT_INTEGRATION", "FINERACT_VERSION", "FINERACT_BASE_URL").merge(
+      "FINERACT_API_TENANT_ID" => "isolated-test", "FINERACT_API_USERNAME" => "user",
+      "FINERACT_API_PASSWORD" => "secret"
+    )
+
+    options = IntegrationConfiguration.client_options(environment)
+    assert_equal "isolated-test", options[:tenant_id]
+    assert_equal "user", options[:username]
+  end
+
   def test_destructive_tests_require_two_explicit_opt_ins
     environment = base_environment
     error = assert_raises(IntegrationConfiguration::Error) { IntegrationConfiguration.allow_destructive!(environment) }

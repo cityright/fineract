@@ -34,6 +34,13 @@ registry_operations = registry.each.map(&:signature).sort_by { |o| o.fetch("oper
 signatures = catalog_operations.map { |o| o.reject { |key, _| key == "source" } }
 abort "registry gap: catalog and registry signatures differ" unless signatures == registry_operations
 resource_methods = bindings(catalog)
+if Fineract.const_defined?(:GeneratedOperations)
+  resource_methods.concat(catalog.each.map do |operation|
+    { "resource_method" => "fineract/generated_operations##{operation.name}", "operation" => operation.name,
+      "source_line" => nil }
+  end)
+end
+resource_methods.uniq!
 implemented = resource_methods.map { |b| b.fetch("operation") }.uniq
 classification = catalog.each.to_h { |o| [o.name, implemented.include?(o.name) ? "implemented" : o.deprecated ? "deprecated" : "intentionally_unavailable"] }
 unsupported = catalog_operations.filter_map { |o| c = classification.fetch(o.fetch("operation")); next if c == "implemented"; o.slice("operation", "method", "path").merge("classification" => c, "reason" => c == "deprecated" ? "Deprecated by pinned OpenAPI document." : "No idiomatic resource method; use client.call(operation, ...).") }

@@ -40,16 +40,13 @@ module Fineract
       raise ConfigurationError, e.message
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
     def self.normalize_base_url(value)
       raise ConfigurationError, "base_url is required" if value.nil? || value.to_s.strip.empty?
       raise ConfigurationError, "base_url must be a String" unless value.is_a?(String)
 
       normalized = value.strip.sub(%r{/+\z}, "")
       uri = URI.parse(normalized)
-      unless uri.is_a?(URI::HTTP) && uri.host && !uri.userinfo
-        raise ConfigurationError, "base_url must be an HTTP(S) URL without embedded credentials"
-      end
+      raise ConfigurationError, "base_url must be an HTTP(S) URL without embedded credentials" unless uri.is_a?(URI::HTTP) && uri.host && !uri.userinfo
 
       normalized
     rescue URI::InvalidURIError
@@ -58,21 +55,17 @@ module Fineract
 
     # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     def self.validate!(attributes)
       validate_non_empty!(attributes, :api_version, :tenant_id, :user_agent)
       validate_positive_number!(attributes, :timeout, :open_timeout)
 
-      if attributes[:username].nil? != attributes[:password].nil?
-        raise ConfigurationError, "username and password must be provided together"
-      end
+      raise ConfigurationError, "username and password must be provided together" if attributes[:username].nil? != attributes[:password].nil?
 
       configured = [attributes[:authentication], attributes[:basic_key], attributes[:bearer_token],
                     attributes[:username]].compact
       raise ConfigurationError, "only one authentication strategy may be configured" if configured.size > 1
-      if attributes[:authentication] && !attributes[:authentication].respond_to?(:apply)
-        raise ConfigurationError, "authentication must respond to apply(request)"
-      end
+      raise ConfigurationError, "authentication must respond to apply(request)" if attributes[:authentication] && !attributes[:authentication].respond_to?(:apply)
 
       validate_non_empty_optional!(attributes, :basic_key, :bearer_token)
 

@@ -4,7 +4,8 @@ module Fineract
   class EntityDatatableChecks < Resource
     def list(status: nil, entity: nil, product_id: nil, offset: nil, limit: nil)
       call(:retrieve_all_entity_datatable_checks,
-           query: mapped_keys({ status: status, entity: entity, product_id: product_id, offset: offset, limit: limit }.compact))
+           query: mapped_keys({ status: status, entity: entity, product_id: product_id, offset: offset,
+                                limit: limit }.compact))
     end
 
     def create(entity:, status:, datatable_name:, product_id: nil)
@@ -17,7 +18,12 @@ module Fineract
 
     def template = call(:retrieve_template_entity_datatable_checks)
 
-    def delete(id) = safe_call { call(:delete_entity_datatable_check, path: { entityDatatableCheckId: id!(id, "entity_datatable_check_id") }, idempotent: false) }
+    def delete(id)
+      safe_call do
+        call(:delete_entity_datatable_check, path: { entityDatatableCheckId: id!(id, "entity_datatable_check_id") },
+                                             idempotent: false)
+      end
+    end
   end
 
   class EntityFieldConfiguration < Resource

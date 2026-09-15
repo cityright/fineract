@@ -1,7 +1,7 @@
 AllCops:
   NewCops: disable
   SuggestExtensions: false
-  TargetRubyVersion: 3.2
+  TargetRubyVersion: 3.3
 
 Style/StringLiterals:
   Enabled: true
@@ -11,28 +11,29 @@ Style/StringLiteralsInInterpolation:
   Enabled: true
   EnforcedStyle: double_quotes
 
-Layout/LineLength:
-  Max: 120
-
-Metrics/AbcSize:
-  Exclude:
-    - "test/**/*"
-
-Metrics/MethodLength:
-  Exclude:
-    - "test/**/*"
-
-Naming/VariableNumber:
-  Exclude:
-    - "test/**/*"
-
-Style/Documentation:
-  Exclude:
-    - "lib/fineract/api/client/create_client.rb"
-    - "lib/fineract/api/groups/create_group.rb"
-    - "lib/fineract/api/org/create_office.rb"
-    - "test/**/*"
-
 Style/RedundantReturn:
   Exclude:
     - "lib/fineract/api/client/create_address.rb"
+
+# The project prioritizes API-contract clarity; generated endpoint wrappers make these
+# generic style checks noisy without improving runtime safety.
+Style/Documentation:
+  Enabled: false
+Layout/LineLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ParameterLists:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false

@@ -7,7 +7,10 @@ class AccountingTest < Minitest::Test
   def test_gl_account_maps_snake_case_and_uses_non_retryable_mutation
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.post("/fineract-provider/api/v1/glaccounts") do |env|
-      assert_equal({ "name" => "Cash", "glCode" => "100001", "manualEntriesAllowed" => true, "type" => 1, "usage" => 1 }, JSON.parse(env.body))
+      assert_equal(
+        { "name" => "Cash", "glCode" => "100001", "manualEntriesAllowed" => true, "type" => 1,
+          "usage" => 1 }, JSON.parse(env.body)
+      )
       [200, { "Content-Type" => "application/json" }, "{}"]
     end
     result = Fineract.client(adapter: [:test, stubs]).accounting.gl_accounts.create(
@@ -36,15 +39,19 @@ class AccountingTest < Minitest::Test
 
   def test_invalid_account_does_not_make_a_request
     stubs = Faraday::Adapter::Test::Stubs.new
-    result = Fineract.client(adapter: [:test, stubs]).accounting.gl_accounts.create(name: "Cash", gl_code: "100001", type: 0)
+    result = Fineract.client(adapter: [:test, stubs]).accounting.gl_accounts.create(name: "Cash", gl_code: "100001",
+                                                                                    type: 0)
     assert_instance_of Fineract::ValidationError, result.failure
     assert_empty stubs.instance_variable_get(:@stack)
   end
 
   def test_accrual_failure_keeps_structured_error
     stubs = Faraday::Adapter::Test::Stubs.new
-    payload = { "developerMessage" => "Period is closed", "errors" => [{ "userMessageGlobalisationCode" => "error.period.closed" }] }
-    stubs.post("/fineract-provider/api/v1/runaccruals") { [400, { "Content-Type" => "application/json" }, JSON.generate(payload)] }
+    payload = { "developerMessage" => "Period is closed",
+                "errors" => [{ "userMessageGlobalisationCode" => "error.period.closed" }] }
+    stubs.post("/fineract-provider/api/v1/runaccruals") do
+      [400, { "Content-Type" => "application/json" }, JSON.generate(payload)]
+    end
     error = Fineract.client(adapter: [:test, stubs]).accounting.accruals.run(till_date: "2026-09-14").failure
     assert_instance_of Fineract::ApiError, error
     assert_equal payload, error.payload

@@ -24,7 +24,10 @@ class AccountTransfersTest < Minitest::Test
   def test_transfer_mutation_is_not_retried
     stubs = Faraday::Adapter::Test::Stubs.new
     attempts = 0
-    stubs.post("/fineract-provider/api/v1/accounttransfers") { attempts += 1; [503, {}, "busy"] }
+    stubs.post("/fineract-provider/api/v1/accounttransfers") do
+      attempts += 1
+      [503, {}, "busy"]
+    end
     result = Fineract.client(adapter: [:test, stubs], retry_options: { max: 2 }).account_transfers.create(
       from_account_id: "10", to_account_id: "11", transfer_amount: 250, transfer_date: "2026-09-14"
     )

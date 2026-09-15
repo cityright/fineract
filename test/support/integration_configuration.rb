@@ -18,22 +18,18 @@ module IntegrationConfiguration
     validate_target!(environment)
     {
       base_url: fetch!(environment, "FINERACT_BASE_URL"),
-      tenant_id: fetch!(environment, "FINERACT_TENANT_ID"),
-      username: fetch!(environment, "FINERACT_USERNAME"),
-      password: fetch!(environment, "FINERACT_PASSWORD")
+      tenant_id: fetch_any!(environment, "FINERACT_TENANT_ID", "FINERACT_API_TENANT_ID"),
+      username: fetch_any!(environment, "FINERACT_USERNAME", "FINERACT_API_USERNAME"),
+      password: fetch_any!(environment, "FINERACT_PASSWORD", "FINERACT_API_PASSWORD")
     }
   end
 
   def allow_destructive!(environment = ENV)
-    unless environment["FINERACT_DESTRUCTIVE"] == "1"
-      raise Error, "set FINERACT_DESTRUCTIVE=1 to run destructive integration tests"
-    end
+    raise Error, "set FINERACT_DESTRUCTIVE=1 to run destructive integration tests" unless environment["FINERACT_DESTRUCTIVE"] == "1"
     raise Error, "destructive tests require a dedicated deployment" unless environment["FINERACT_DEDICATED"] == "1"
 
     host = URI.parse(fetch!(environment, "FINERACT_BASE_URL")).host.to_s.downcase
-    if SHARED_DEMO_HOSTS.include?(host) || host.start_with?("demo.")
-      raise Error, "destructive tests cannot run against a shared demo tenant"
-    end
+    raise Error, "destructive tests cannot run against a shared demo tenant" if SHARED_DEMO_HOSTS.include?(host) || host.start_with?("demo.")
 
     true
   rescue URI::InvalidURIError
@@ -45,6 +41,15 @@ module IntegrationConfiguration
     return if environment["FINERACT_VERSION"] == TARGET_VERSION
 
     raise Error, "integration deployment must run Fineract #{TARGET_VERSION}"
+  end
+
+  def fetch_any!(environment, *names)
+    names.each do |name|
+      value = environment[name]
+      return value unless value.nil? || value.empty?
+    end
+
+    raise Error, "#{names.join(" or ")} is required"
   end
 
   def fetch!(environment, name)

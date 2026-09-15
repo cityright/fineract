@@ -43,7 +43,6 @@ module Fineract
   class ApiError < Error
     attr_reader :status, :payload, :globalisation_codes, :parameter_errors, :developer_message, :response
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def initialize(status:, payload:, response: nil)
       @status = status
       @payload = Redaction.call(payload)

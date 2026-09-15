@@ -23,31 +23,53 @@ module Fineract
     }.freeze
 
     class ProductMixes < Resource
-      def retrieve(product_id) = safe_call { call(:retrieve_template_product_mix, path: { productId: id!(product_id, "product_id") }) }
+      def retrieve(product_id)
+        safe_call { call(:retrieve_template_product_mix, path: { productId: id!(product_id, "product_id") }) }
+      end
+
       def create(product_id, restricted_products:)
         validate_contract(Contracts::PhaseOne::ProductMix, restricted_products: restricted_products)
-        call(:create_product_mix, path: { productId: id!(product_id, "product_id") }, body: { "restrictedProducts" => restricted_products }, idempotent: false)
+        call(:create_product_mix, path: { productId: id!(product_id, "product_id") },
+                                  body: { "restrictedProducts" => restricted_products }, idempotent: false)
       rescue ValidationError => e then Failure.new(e)
       end
+
       def update(product_id, restricted_products:)
         validate_contract(Contracts::PhaseOne::ProductMix, restricted_products: restricted_products)
-        call(:update_product_mix, path: { productId: id!(product_id, "product_id") }, body: { "restrictedProducts" => restricted_products }, idempotent: false)
+        call(:update_product_mix, path: { productId: id!(product_id, "product_id") },
+                                  body: { "restrictedProducts" => restricted_products }, idempotent: false)
       rescue ValidationError => e then Failure.new(e)
       end
-      def delete(product_id) = safe_call { call(:delete_product_mix, path: { productId: id!(product_id, "product_id") }, idempotent: false) }
+
+      def delete(product_id)
+        safe_call { call(:delete_product_mix, path: { productId: id!(product_id, "product_id") }, idempotent: false) }
+      end
     end
 
     attr_reader :product_mixes
+
     def list = call(:retrieve_all_loan_products)
     def basic_details = call(:retrieve_all_loan_products_details)
+
     def create(**attributes)
       validate_contract(Contracts::PhaseOne::LoanProductCreate, attributes)
       call(:create_loan_product, body: mapped_keys(attributes, PRODUCT_FIELDS), idempotent: false)
     rescue ValidationError => e then Failure.new(e)
     end
-    def retrieve(product_id) = safe_call { call(:retrieve_one_loan_product, path: { productId: id!(product_id, "product_id") }) }
-    def update(product_id, **attributes) = safe_call { call(:update_loan_product, path: { productId: id!(product_id, "product_id") }, body: mapped_keys(attributes, PRODUCT_FIELDS), idempotent: false) }
+
+    def retrieve(product_id)
+      safe_call { call(:retrieve_one_loan_product, path: { productId: id!(product_id, "product_id") }) }
+    end
+
+    def update(product_id, **attributes)
+      safe_call do
+        call(:update_loan_product, path: { productId: id!(product_id, "product_id") },
+                                   body: mapped_keys(attributes, PRODUCT_FIELDS), idempotent: false)
+      end
+    end
+
     def template = call(:retrieve_template_loan_product)
+
     def initialize(client)
       super
       @product_mixes = ProductMixes.new(client)

@@ -10,7 +10,8 @@ class CashManagementTest < Minitest::Test
       assert_equal({ "name" => "Main", "officeId" => 1, "startDate" => "2026-09-15" }, JSON.parse(env.body))
       [200, { "Content-Type" => "application/json" }, "{}"]
     end
-    result = Fineract.client(adapter: [:test, stubs]).tellers.create(name: "Main", office_id: 1, start_date: "2026-09-15")
+    result = Fineract.client(adapter: [:test, stubs]).tellers.create(name: "Main", office_id: 1,
+                                                                     start_date: "2026-09-15")
     assert result.success?
     stubs.verify_stubbed_calls
   end
@@ -39,8 +40,11 @@ class CashManagementTest < Minitest::Test
 
   def test_cash_management_preserves_structured_financial_error
     stubs = Faraday::Adapter::Test::Stubs.new
-    payload = { "developerMessage" => "Insufficient cash", "errors" => [{ "userMessageGlobalisationCode" => "error.cash.insufficient" }] }
-    stubs.post("/fineract-provider/api/v1/tellers/2/cashiers/3/settle") { [400, { "Content-Type" => "application/json" }, JSON.generate(payload)] }
+    payload = { "developerMessage" => "Insufficient cash",
+                "errors" => [{ "userMessageGlobalisationCode" => "error.cash.insufficient" }] }
+    stubs.post("/fineract-provider/api/v1/tellers/2/cashiers/3/settle") do
+      [400, { "Content-Type" => "application/json" }, JSON.generate(payload)]
+    end
     error = Fineract.client(adapter: [:test, stubs]).cash_management.cashiers_resource(2).settle(
       3, currency_code: "KES", txn_amount: 100, txn_date: "2026-09-15"
     ).failure

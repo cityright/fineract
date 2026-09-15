@@ -81,6 +81,7 @@ module Fineract
     Entry = Data.define(:name, :operation) do
       def method = operation.method
       def path = operation.path
+
       def signature
         {
           "operation" => name, "method" => method.to_s.upcase, "path" => path,
@@ -107,6 +108,7 @@ module Fineract
     def register(operation)
       name = operation.name.to_s
       raise ArgumentError, "operation already registered: #{name}" if @entries.key?(name)
+
       entry = Entry.new(name, operation)
       @entries[name] = entry
       @aliases[underscore(name)] = entry

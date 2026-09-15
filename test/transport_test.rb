@@ -49,14 +49,24 @@ class TransportTest < Minitest::Test
     stubs.verify_stubbed_calls
   end
 
+  def test_rejects_sensitive_query_values_before_a_request_is_made
+    output = StringIO.new
+    client = client_with(Faraday::Adapter::Test::Stubs.new, logger: Logger.new(output))
+
+    result = client.get("private", query: { access_token: "token-secret" })
+
+    assert result.failure?
+    assert_match(/must not be sent in a URL query/, result.failure.message)
+    assert_empty output.string
+  end
+
   def test_redacts_credentials_and_secrets_from_logs
     output = StringIO.new
     logger = Logger.new(output)
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get("/fineract-provider/api/v1/private") { [204, {}, ""] }
     client_with(stubs, username: "user", password: "secret", logger: logger).get(
-      "private", query: { access_token: "token-secret", api_key: "key-secret" },
-                 headers: { "Cookie" => "session-secret" }
+      "private", query: { page: 1 }, headers: { "Cookie" => "session-secret", "X-Api-Key" => "key-secret" }
     )
     assert_includes output.string, "[REDACTED]"
     refute_includes output.string, "secret"

@@ -11,17 +11,23 @@ class EntityMetadataTest < Minitest::Test
   def test_entity_datatable_checks_preserve_wire_keys_and_query_parameters
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.get("/fineract-provider/api/v1/entityDatatableChecks") do |env|
-      assert_equal({ "status" => "100", "entity" => "m_loan", "productId" => "7", "offset" => "0", "limit" => "25" }, env.params)
+      assert_equal({ "status" => "100", "entity" => "m_loan", "productId" => "7", "offset" => "0", "limit" => "25" },
+                   env.params)
       [200, { "Content-Type" => "application/json" }, '{"pageItems":[]}']
     end
     stubs.post("/fineract-provider/api/v1/entityDatatableChecks") do |env|
-      assert_equal({ "entity" => "m_loan", "status" => 100, "datatableName" => "Additional Details", "productId" => 7 }, JSON.parse(env.body))
+      assert_equal(
+        { "entity" => "m_loan", "status" => 100, "datatableName" => "Additional Details",
+          "productId" => 7 }, JSON.parse(env.body)
+      )
       [200, { "Content-Type" => "application/json" }, '{"resourceId":8}']
     end
 
     client = client_with(stubs)
-    assert client.entity_datatable_checks.list(status: 100, entity: "m_loan", product_id: 7, offset: 0, limit: 25).success?
-    assert client.entity_datatable_checks.create(entity: "m_loan", status: 100, datatable_name: "Additional Details", product_id: 7).success?
+    assert client.entity_datatable_checks.list(status: 100, entity: "m_loan", product_id: 7, offset: 0,
+                                               limit: 25).success?
+    assert client.entity_datatable_checks.create(entity: "m_loan", status: 100, datatable_name: "Additional Details",
+                                                 product_id: 7).success?
     stubs.verify_stubbed_calls
   end
 

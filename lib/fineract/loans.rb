@@ -38,64 +38,187 @@ module Fineract
     }.freeze
 
     class Schedules < Resource
-      def command(loan_id, command:, **attributes) = safe_call { call(:handle_commands_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command }, body: mapped_keys(attributes, Loans::LOAN_FIELDS), idempotent: false) }
+      def command(loan_id, command:, **attributes)
+        safe_call do
+          call(:handle_commands_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command },
+                                               body: mapped_keys(attributes, Loans::LOAN_FIELDS), idempotent: false)
+        end
+      end
       alias generate command
       alias reschedule command
     end
 
     class Transactions < Resource
       def list(loan_id) = safe_call { call(:retrieve_all_loan_transactions, path: { loanId: id!(loan_id, "loan_id") }) }
-      def create(loan_id, command:, **attributes) = safe_call { call(:handle_commands_loan_transaction, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command }, body: mapped_keys(attributes, Loans::TRANSACTION_FIELDS), idempotent: false) }
+
+      def create(loan_id, command:, **attributes)
+        safe_call do
+          call(:handle_commands_loan_transaction, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command },
+                                                  body: mapped_keys(attributes, Loans::TRANSACTION_FIELDS), idempotent: false)
+        end
+      end
+
       def disburse(loan_id, **attributes) = create(loan_id, command: "disburse", **attributes)
       def repay(loan_id, **attributes) = create(loan_id, command: "repayment", **attributes)
       def refund(loan_id, **attributes) = create(loan_id, command: "refund", **attributes)
       def foreclosure(loan_id, **attributes) = create(loan_id, command: "foreclosure", **attributes)
       def write_off(loan_id, **attributes) = create(loan_id, command: "writeoff", **attributes)
       def recover(loan_id, **attributes) = create(loan_id, command: "recovery", **attributes)
-      def retrieve(loan_id, transaction_id) = safe_call { call(:retrieve_one_loan_transaction, path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") }) }
-      def adjust(loan_id, transaction_id, **attributes) = safe_call { call(:adjust_loan_transaction, path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") }, body: mapped_keys(attributes, TRANSACTION_FIELDS), idempotent: false) }
-      def undo_waive_charge(loan_id, transaction_id, **attributes) = safe_call { call(:undo_waive_charge_loan_transaction, path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") }, body: mapped_keys(attributes, TRANSACTION_FIELDS), idempotent: false) }
-      def re_age_preview(loan_id) = safe_call { call(:preview_re_age_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }) }
-      def re_amortize_preview(loan_id) = safe_call { call(:preview_re_amortize_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }) }
+
+      def retrieve(loan_id, transaction_id)
+        safe_call do
+          call(:retrieve_one_loan_transaction,
+               path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") })
+        end
+      end
+
+      def adjust(loan_id, transaction_id, **attributes)
+        safe_call do
+          call(:adjust_loan_transaction,
+               path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") }, body: mapped_keys(attributes, TRANSACTION_FIELDS), idempotent: false)
+        end
+      end
+
+      def undo_waive_charge(loan_id, transaction_id, **attributes)
+        safe_call do
+          call(:undo_waive_charge_loan_transaction,
+               path: { loanId: id!(loan_id, "loan_id"), transactionId: id!(transaction_id, "transaction_id") }, body: mapped_keys(attributes, TRANSACTION_FIELDS), idempotent: false)
+        end
+      end
+
+      def re_age_preview(loan_id)
+        safe_call { call(:preview_re_age_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }) }
+      end
+
+      def re_amortize_preview(loan_id)
+        safe_call { call(:preview_re_amortize_loan_schedule, path: { loanId: id!(loan_id, "loan_id") }) }
+      end
     end
 
     class Charges < Resource
       def list(loan_id) = safe_call { call(:retrieve_all_loan_charges, path: { loanId: id!(loan_id, "loan_id") }) }
-      def create(loan_id, command: nil, **attributes) = safe_call { call(:create_or_pay_loan_charge, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command }.compact, body: mapped_keys(attributes, Loans::CHARGE_FIELDS), idempotent: false) }
+
+      def create(loan_id, command: nil, **attributes)
+        safe_call do
+          call(:create_or_pay_loan_charge, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command }.compact,
+                                           body: mapped_keys(attributes, Loans::CHARGE_FIELDS), idempotent: false)
+        end
+      end
       alias pay create
-      def retrieve(loan_id, charge_id) = safe_call { call(:retrieve_one_loan_charge, path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") }) }
-      def update(loan_id, charge_id, **attributes) = safe_call { call(:update_loan_charge, path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") }, body: mapped_keys(attributes, Loans::CHARGE_FIELDS), idempotent: false) }
-      def delete(loan_id, charge_id) = safe_call { call(:delete_loan_charge, path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") }, idempotent: false) }
-      def template(loan_id) = safe_call { call(:retrieve_template_loan_charge, path: { loanId: id!(loan_id, "loan_id") }) }
+      def retrieve(loan_id, charge_id)
+        safe_call do
+          call(:retrieve_one_loan_charge,
+               path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") })
+        end
+      end
+
+      def update(loan_id, charge_id, **attributes)
+        safe_call do
+          call(:update_loan_charge, path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") },
+                                    body: mapped_keys(attributes, Loans::CHARGE_FIELDS), idempotent: false)
+        end
+      end
+
+      def delete(loan_id, charge_id)
+        safe_call do
+          call(:delete_loan_charge, path: { loanId: id!(loan_id, "loan_id"), loanChargeId: id!(charge_id, "charge_id") },
+                                    idempotent: false)
+        end
+      end
+
+      def template(loan_id)
+        safe_call { call(:retrieve_template_loan_charge, path: { loanId: id!(loan_id, "loan_id") }) }
+      end
     end
 
     class Disbursements < Resource
-      def update(loan_id, **attributes) = safe_call { call(:add_and_delete_disbursement_detail, path: { loanId: id!(loan_id, "loan_id") }, body: mapped_keys(attributes, Loans::LOAN_FIELDS), idempotent: false) }
-      def retrieve(loan_id, disbursement_id) = safe_call { call(:retrive_detail, path: { loanId: id!(loan_id, "loan_id"), disbursementId: id!(disbursement_id, "disbursement_id") }) }
-      def update_date(loan_id, disbursement_id, date:) = safe_call { call(:update_disbursement_date, path: { loanId: id!(loan_id, "loan_id"), disbursementId: id!(disbursement_id, "disbursement_id") }, body: date.to_s, request_type: "text", idempotent: false) }
+      def update(loan_id, **attributes)
+        safe_call do
+          call(:add_and_delete_disbursement_detail, path: { loanId: id!(loan_id, "loan_id") },
+                                                    body: mapped_keys(attributes, Loans::LOAN_FIELDS), idempotent: false)
+        end
+      end
+
+      def retrieve(loan_id, disbursement_id)
+        safe_call do
+          call(:retrive_detail,
+               path: { loanId: id!(loan_id, "loan_id"), disbursementId: id!(disbursement_id, "disbursement_id") })
+        end
+      end
+
+      def update_date(loan_id, disbursement_id, date:)
+        safe_call do
+          call(:update_disbursement_date,
+               path: { loanId: id!(loan_id, "loan_id"), disbursementId: id!(disbursement_id, "disbursement_id") }, body: date.to_s, request_type: "text", idempotent: false)
+        end
+      end
     end
 
     class Delinquency < Resource
-      def list(loan_id) = safe_call { call(:retrieve_delinquency_actions_loan, path: { loanId: id!(loan_id, "loan_id") }) }
-      def create(loan_id, **attributes) = safe_call { call(:create_delinquency_action_loan, path: { loanId: id!(loan_id, "loan_id") }, body: mapped_keys(attributes), idempotent: false) }
-      def tags(loan_id) = safe_call { call(:retrieve_delinquency_tag_history_loan, path: { loanId: id!(loan_id, "loan_id") }) }
+      def list(loan_id)
+        safe_call { call(:retrieve_delinquency_actions_loan, path: { loanId: id!(loan_id, "loan_id") }) }
+      end
+
+      def create(loan_id, **attributes)
+        safe_call do
+          call(:create_delinquency_action_loan, path: { loanId: id!(loan_id, "loan_id") }, body: mapped_keys(attributes),
+                                                idempotent: false)
+        end
+      end
+
+      def tags(loan_id)
+        safe_call { call(:retrieve_delinquency_tag_history_loan, path: { loanId: id!(loan_id, "loan_id") }) }
+      end
     end
 
-    attr_reader :schedules, :transactions, :charges, :disbursements, :delinquency, :collaterals, :guarantors, :post_dated_checks
+    attr_reader :schedules, :transactions, :charges, :disbursements, :delinquency, :collaterals, :guarantors,
+                :post_dated_checks
 
-    def list(**query) = call(:retrieve_all_loans, query: mapped_keys(query, client_id: "clientId", office_id: "officeId", product_id: "productId", loan_status: "loanStatus", external_id: "externalId", offset: "offset", limit: "limit", order_by: "orderBy", sort_order: "sortOrder"))
+    def list(**query)
+      call(:retrieve_all_loans,
+           query: mapped_keys(query, client_id: "clientId", office_id: "officeId", product_id: "productId",
+                                     loan_status: "loanStatus", external_id: "externalId", offset: "offset", limit: "limit", order_by: "orderBy", sort_order: "sortOrder"))
+    end
+
     def create(command: nil, **attributes)
       validate_contract(Contracts::PhaseOne::LoanApplicationCreate, attributes)
-      call(:calculate_or_submit_loan_application, query: { "command" => command }.compact, body: mapped_keys(attributes, LOAN_FIELDS), idempotent: false)
+      call(:calculate_or_submit_loan_application, query: { "command" => command }.compact,
+                                                  body: mapped_keys(attributes, LOAN_FIELDS), idempotent: false)
     rescue ValidationError => e then Failure.new(e)
     end
+
     def submit(**attributes) = create(command: "submit", **attributes)
     def calculate(**attributes) = create(command: "calculate", **attributes)
-    def template(**query) = call(:retrieve_template_loan, query: mapped_keys(query, client_id: "clientId", group_id: "groupId", product_id: "productId", template_type: "templateType", staff_in_selected_office_only: "staffInSelectedOfficeOnly", active_only: "activeOnly"))
-    def approval_template(loan_id, template_type: nil) = safe_call { call(:retrieve_approval_template, path: { loanId: id!(loan_id, "loan_id") }, query: { "templateType" => template_type }.compact) }
+
+    def template(**query)
+      call(:retrieve_template_loan,
+           query: mapped_keys(query, client_id: "clientId", group_id: "groupId", product_id: "productId",
+                                     template_type: "templateType", staff_in_selected_office_only: "staffInSelectedOfficeOnly", active_only: "activeOnly"))
+    end
+
+    def approval_template(loan_id, template_type: nil)
+      safe_call do
+        call(:retrieve_approval_template, path: { loanId: id!(loan_id, "loan_id") },
+                                          query: { "templateType" => template_type }.compact)
+      end
+    end
+
     def retrieve(loan_id) = safe_call { call(:retrieve_one_loan, path: { loanId: id!(loan_id, "loan_id") }) }
-    def update(loan_id, **attributes) = safe_call { call(:update_loan_application, path: { loanId: id!(loan_id, "loan_id") }, body: mapped_keys(attributes, LOAN_FIELDS), idempotent: false) }
-    def service(loan_id, command:, **attributes) = safe_call { call(:handle_commands_loan, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command }, body: mapped_keys(attributes, LOAN_FIELDS), idempotent: false) }
+
+    def update(loan_id, **attributes)
+      safe_call do
+        call(:update_loan_application, path: { loanId: id!(loan_id, "loan_id") }, body: mapped_keys(attributes, LOAN_FIELDS),
+                                       idempotent: false)
+      end
+    end
+
+    def service(loan_id, command:, **attributes)
+      safe_call do
+        call(:handle_commands_loan, path: { loanId: id!(loan_id, "loan_id") }, query: { "command" => command },
+                                    body: mapped_keys(attributes, LOAN_FIELDS), idempotent: false)
+      end
+    end
+
     def approve(loan_id, **attributes) = service(loan_id, command: "approve", **attributes)
     def reject(loan_id, **attributes) = service(loan_id, command: "reject", **attributes)
     def withdraw(loan_id, **attributes) = service(loan_id, command: "withdraw", **attributes)
@@ -105,7 +228,11 @@ module Fineract
     def foreclosure(loan_id, **attributes) = transactions.foreclosure(loan_id, **attributes)
     def write_off(loan_id, **attributes) = transactions.write_off(loan_id, **attributes)
     def recover(loan_id, **attributes) = transactions.recover(loan_id, **attributes)
-    def amortization_allocation_rules(loan_id) = safe_call { call(:get_advanced_payment_allocation_rules_of_loan, path: { loanId: id!(loan_id, "loan_id") }) }
+
+    def amortization_allocation_rules(loan_id)
+      safe_call { call(:get_advanced_payment_allocation_rules_of_loan, path: { loanId: id!(loan_id, "loan_id") }) }
+    end
+
     def initialize(client)
       super
       @schedules = Schedules.new(client)

@@ -7,10 +7,12 @@ class SharesTest < Minitest::Test
   def test_share_product_maps_fields
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.post("/fineract-provider/api/v1/products/shares") do |env|
-      assert_equal({ "name" => "Member shares", "shortName" => "MS", "currencyCode" => "KES", "unitPrice" => 100 }, JSON.parse(env.body))
+      assert_equal({ "name" => "Member shares", "shortName" => "MS", "currencyCode" => "KES", "unitPrice" => 100 },
+                   JSON.parse(env.body))
       [200, { "Content-Type" => "application/json" }, "{}"]
     end
-    result = Fineract.client(adapter: [:test, stubs]).shares.products.create(name: "Member shares", short_name: "MS", currency_code: "KES", unit_price: 100)
+    result = Fineract.client(adapter: [:test, stubs]).shares.products.create(name: "Member shares", short_name: "MS",
+                                                                             currency_code: "KES", unit_price: 100)
     assert result.success?
     stubs.verify_stubbed_calls
   end
@@ -40,7 +42,8 @@ class SharesTest < Minitest::Test
 
   def test_invalid_share_account_does_not_make_a_request
     stubs = Faraday::Adapter::Test::Stubs.new
-    result = Fineract.client(adapter: [:test, stubs]).shares.accounts.create(client_id: 0, product_id: 2, application_date: "", requested_shares: 0)
+    result = Fineract.client(adapter: [:test, stubs]).shares.accounts.create(client_id: 0, product_id: 2,
+                                                                             application_date: "", requested_shares: 0)
     assert_instance_of Fineract::ValidationError, result.failure
     assert_empty stubs.instance_variable_get(:@stack)
   end

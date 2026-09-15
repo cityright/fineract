@@ -30,10 +30,20 @@ class EndpointConformanceTest < Minitest::Test
     end
   end
 
+  def test_generated_operations_facade_exposes_every_catalog_operation
+    client = Fineract.client(adapter: [:test, Faraday::Adapter::Test::Stubs.new])
+    operations = JSON.parse(File.read(REPORT)).fetch("catalog_operations")
+
+    operations.each { |operation| assert_respond_to client.operations, operation.fetch("operation") }
+  end
+
   def test_endpoint_identities_are_unique_and_do_not_embed_queries
     operations = JSON.parse(File.read(REPORT)).fetch("catalog_operations")
     identities = operations.map { |operation| operation.values_at("method", "path", "operation") }
     assert_equal identities.uniq, identities
-    operations.each { |operation| refute_includes operation.fetch("path"), "?"; assert_match(%r{\A/}, operation.fetch("path")) }
+    operations.each do |operation|
+      refute_includes operation.fetch("path"), "?"
+      assert_match(%r{\A/}, operation.fetch("path"))
+    end
   end
 end

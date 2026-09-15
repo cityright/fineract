@@ -13,6 +13,7 @@ module Fineract
         end
         rule(:office_id) { key.failure("must be a positive integer") unless value.positive? }
       end
+
       class GroupCreate < Dry::Validation::Contract
         params do
           required(:name).filled(:string)
@@ -21,6 +22,7 @@ module Fineract
         end
         rule(:office_id) { key.failure("must be a positive integer") unless value.positive? }
       end
+
       class OfficeCreate < Dry::Validation::Contract
         params do
           required(:name).filled(:string)
@@ -117,7 +119,9 @@ module Fineract
           required(:transfer_amount).filled
           required(:transfer_date).filled(:string)
         end
-        rule(:transfer_amount) { key.failure("must be a positive amount") unless value.is_a?(Numeric) && value.positive? }
+        rule(:transfer_amount) do
+          key.failure("must be a positive amount") unless value.is_a?(Numeric) && value.positive?
+        end
       end
 
       class ReportCreate < Dry::Validation::Contract

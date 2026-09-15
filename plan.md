@@ -2,7 +2,7 @@
 
 ## Summary
 
-Rebuild the gem as a framework-agnostic Ruby 3.2+ client using the architectural style demonstrated by [Lipwa](https://github.com/kamalogudah/lipwa): explicit configuration, a shared Faraday adapter, dry-rb contracts and result objects, and domain-oriented resource clients.
+Rebuild the gem as a framework-agnostic Ruby 3.3+ client using the architectural style demonstrated by [Lipwa](https://github.com/kamalogudah/lipwa): explicit configuration, a shared Faraday adapter, dry-rb contracts and result objects, and domain-oriented resource clients.
 
 Use [Apache Fineract 1.15.0](https://github.com/apache/fineract/releases/tag/1.15.0) as the initial compatibility target. Pin its generated OpenAPI definition as the machine-readable contract; use the [legacy Mifos API documentation](https://demo.mifos.io/api-docs/apiLive.htm) to improve descriptions and identify deprecated or undocumented operations.
 
@@ -185,7 +185,7 @@ Each phase adds idiomatic resource methods, contracts, documentation, unit tests
 - Generator tests must use small fixtures and verify stable output, name overrides, deprecated operations, commands, multipart bodies, and duplicate operation IDs.
 - Endpoint conformance tests must assert that every operation in the pinned specification exists in the registry with the correct verb and path.
 - Add opt-in integration tests against an Apache Fineract 1.15.0 test deployment. Never run destructive integration tests against a shared demo tenant.
-- CI must test Ruby 3.2 and the latest supported stable Ruby, run tests and linting, verify generated files are current, and publish the endpoint coverage report.
+- CI must test Ruby 3.3 and the latest supported stable Ruby, run tests and linting, verify generated files are current, and publish the endpoint coverage report.
 - Release acceptance requires:
   - No runtime Rails or Active Support dependency.
   - No disabled TLS verification.
@@ -216,4 +216,4 @@ Each phase adds idiomatic resource methods, contracts, documentation, unit tests
 - Legacy Mifos documentation is advisory, not authoritative when it conflicts with the pinned OpenAPI definition.
 - Full coverage means immediate low-level access to every pinned operation and phased delivery of idiomatic resource methods.
 - The library remains an HTTP client gem and does not include persistence, Rails generators, background jobs, or UI code.
-- Ruby 3.2+ and a breaking 1.0 release are acceptable.
+- Ruby 3.3+ and a breaking 1.0 release are acceptable.

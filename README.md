@@ -2,7 +2,7 @@
 
 A framework-agnostic Ruby client for Apache Fineract.
 
-The 1.0 line requires Ruby 3.2 or newer and does not depend on Rails. It can be
+The 1.0 line requires Ruby 3.3 or newer and does not depend on Rails. It can be
 used from plain Ruby or any Ruby web framework.
 
 For applications upgrading from the pre-1.0 Flexirest API, see the [breaking-change migration guide](docs/legacy-resource-mapping.md).
@@ -168,6 +168,12 @@ The supported surface is exposed through `security`, `administration`,
 `loan_products`, `fixed_deposits`, `recurring_deposits`, `accounting`, `shares`,
 `account_transfers`, `reporting`, `search`, `provisioning`, `taxes`,
 `payment_types`, `floating_rates`, `rates`, and `interest_rate_charts`.
+
+Every pinned operation is also exposed as a named method under `client.operations`. This is the complete generated facade for endpoints that do not yet need a more specialized domain wrapper:
+
+```ruby
+client.operations.retrieve(path: { id: 42 })
+```
 
 ## Results and errors
 

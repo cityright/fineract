@@ -7,7 +7,10 @@ class LoanProductsTest < Minitest::Test
   def test_product_create_maps_wire_fields_and_is_not_retried
     stubs = Faraday::Adapter::Test::Stubs.new
     stubs.post("/fineract-provider/api/v1/loanproducts") do |env|
-      assert_equal({ "name" => "Working loan", "shortName" => "WL", "currencyCode" => "KES", "interestRatePerPeriod" => 2.5 }, JSON.parse(env.body))
+      assert_equal(
+        { "name" => "Working loan", "shortName" => "WL", "currencyCode" => "KES",
+          "interestRatePerPeriod" => 2.5 }, JSON.parse(env.body)
+      )
       [200, { "Content-Type" => "application/json" }, "{}"]
     end
     result = Fineract.client(adapter: [:test, stubs]).loan_products.create(
@@ -47,7 +50,8 @@ class LoanProductsTest < Minitest::Test
 
   def test_invalid_application_does_not_make_a_request
     stubs = Faraday::Adapter::Test::Stubs.new
-    result = Fineract.client(adapter: [:test, stubs]).loans.submit(client_id: 0, product_id: 4, principal: 0, submitted_on_date: "")
+    result = Fineract.client(adapter: [:test, stubs]).loans.submit(client_id: 0, product_id: 4, principal: 0,
+                                                                   submitted_on_date: "")
     assert_instance_of Fineract::ValidationError, result.failure
     assert_empty stubs.instance_variable_get(:@stack)
   end

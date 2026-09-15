@@ -5,6 +5,9 @@ module Fineract
   class SelfService < Resource
     def profile = call(:fetch_authenticated_user_data)
     def notifications(**query) = call(:get_all_notifications, query: mapped_keys(query))
-    def mark_notification_read(**attributes) = call(:update_notification_read_status, body: mapped_keys(attributes), idempotent: false)
+
+    def mark_notification_read(**attributes)
+      call(:update_notification_read_status, body: mapped_keys(attributes), idempotent: false)
+    end
   end
 end

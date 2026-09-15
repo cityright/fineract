@@ -2,7 +2,7 @@
 
 require "uri"
 # The transport intentionally centralizes the complete HTTP wire policy.
-# rubocop:disable Metrics, Style/MultilineBlockChain
+# rubocop:disable Style/MultilineBlockChain
 
 module Fineract
   # Shared Faraday transport for every resource client.
@@ -23,6 +23,8 @@ module Fineract
                         request_type: :json, response_type: nil, idempotent: nil, idempotency_key: nil)
       method = method.to_sym
       raise ArgumentError, "unsupported HTTP method: #{method}" unless METHODS.include?(method)
+
+      reject_sensitive_query!(query)
 
       request_path = interpolate_path(path, path_params)
       request_headers = default_headers.merge(stringify_headers(headers))
@@ -106,19 +108,20 @@ module Fineract
       return nil if body.nil?
 
       media = type.to_s.downcase
-      headers["Content-Type"] ||= type.to_s unless %w[json form multipart binary text csv].include?(media) || media.include?("multipart/form-data")
-      case
-      when media == "json" || media.include?("json")
+      headers["Content-Type"] ||= type.to_s unless %w[json form multipart binary text
+                                                      csv].include?(media) || media.include?("multipart/form-data")
+      if media == "json" || media.include?("json")
         headers["Content-Type"] ||= "application/json"
         body.is_a?(String) ? body : JSON.generate(body)
-      when media == "form" || media.include?("x-www-form-urlencoded")
+      elsif media == "form" || media.include?("x-www-form-urlencoded")
         headers["Content-Type"] ||= "application/x-www-form-urlencoded"
         Faraday::Utils.build_nested_query(body)
-      when media == "multipart" || media.include?("multipart/form-data") then encode_multipart(body, headers)
-      when media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/", "video/")
+      elsif media == "multipart" || media.include?("multipart/form-data")
+        encode_multipart(body, headers)
+      elsif media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/", "video/")
         headers["Content-Type"] ||= "application/octet-stream"
         body.respond_to?(:read) ? body.read : body.to_s
-      when media == "text" || media == "csv" || media.start_with?("text/")
+      elsif media == "text" || media == "csv" || media.start_with?("text/")
         headers["Content-Type"] ||= media == "csv" ? "text/csv" : "text/plain"
         body.to_s
       else
@@ -176,9 +179,9 @@ module Fineract
       body = raw.body
       type = explicit_type || inferred_response_type(raw.headers["content-type"], body)
       media = type.to_s.downcase
-      data = case
-             when media == "empty" then nil
-             when media == "json" || media.include?("json")
+      data = if media == "empty"
+               nil
+             elsif media == "json" || media.include?("json")
                begin
                  JSON.parse(body.to_s)
                rescue JSON::ParserError => e
@@ -189,9 +192,13 @@ module Fineract
 
                  body
                end
-             when media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/", "video/") then body.to_s.b
-             when media == "text" || media == "csv" || media.start_with?("text/") || media.include?("xml") then body.to_s
-             else body.to_s
+             elsif media == "binary" || media.include?("octet-stream") || media.start_with?("image/", "audio/",
+                                                                                            "video/")
+               body.to_s.b
+             elsif media == "text" || media == "csv" || media.start_with?("text/") || media.include?("xml")
+               body.to_s
+             else
+               body.to_s
              end
       Response.new(status: raw.status, headers: raw.headers, data: data, body: body)
     end
@@ -218,6 +225,15 @@ module Fineract
       end
     end
 
+    # Authentication belongs in headers. Keeping secrets out of query strings prevents
+    # them from reaching proxies, browser histories, and server access logs.
+    def reject_sensitive_query!(query)
+      sensitive = query.to_h.keys.find { |key| SENSITIVE_NAME.match?(key.to_s) }
+      return unless sensitive
+
+      raise ArgumentError, "sensitive value #{sensitive.inspect} must not be sent in a URL query"
+    end
+
     def log_response(raw)
       configuration.logger&.info("Fineract response status=#{raw.status}")
     end
@@ -225,4 +241,4 @@ module Fineract
     class RetryableResponse < StandardError; end
   end
 end
-# rubocop:enable Metrics, Style/MultilineBlockChain
+# rubocop:enable Style/MultilineBlockChain
