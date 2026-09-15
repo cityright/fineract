@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fineract (0.1.0)
+    fineract (1.0.0)
       dry-configurable (~> 1.0)
       dry-container (~> 0.11)
       dry-monads (~> 1.6)

@@ -8,17 +8,17 @@ Gem::Specification.new do |spec|
   spec.authors = ["kamalogudah"]
   spec.email = ["mcpaul2058@gmail.com"]
 
-  spec.summary = "Fineract Ruby."
-  spec.description = "Fineract Ruby."
-  spec.homepage = "https://cityright.co.ke"
+  spec.summary = "A framework-agnostic Ruby client for Apache Fineract"
+  spec.description = "A typed, resource-oriented Ruby client for the Apache Fineract 1.15.0 API."
+  spec.homepage = "https://github.com/cityright/fineract"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
-
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/cityright/fineract"
+  spec.metadata["changelog_uri"] = "https://github.com/cityright/fineract/blob/main/CHANGELOG.md"
+  spec.metadata["documentation_uri"] = "https://github.com/cityright/fineract#readme"
+  spec.metadata["bug_tracker_uri"] = "https://github.com/cityright/fineract/issues"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
     Dir["lib/**/*", "sig/**/*", "specifications/*.json", "CHANGELOG.md", "CODE_OF_CONDUCT.md",

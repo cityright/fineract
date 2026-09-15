@@ -1,4 +1,332 @@
-module FineractRuby
+module Fineract
   VERSION: String
-  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+  DEFAULT_RETRY_OPTIONS: Hash[Symbol, untyped]
+  type Attributes = Hash[Symbol | String, untyped]
+  type Result = Success | Failure
+  def self.configure: () { (untyped) -> untyped } -> untyped
+  def self.client: (**untyped) -> Client
+
+  class Configuration
+    def self.new: (Attributes) -> Configuration
+    attr_reader base_url: String
+    attr_reader api_version: String
+    attr_reader tenant_id: String
+    attr_reader username: String?
+    attr_reader password: String?
+    attr_reader basic_key: String?
+    attr_reader bearer_token: String?
+    attr_reader authentication: untyped
+    attr_reader timeout: Integer | Float
+    attr_reader open_timeout: Integer | Float
+    attr_reader logger: untyped
+    attr_reader adapter: untyped
+    attr_reader retry_options: Hash[untyped, untyped]
+    attr_reader verify_ssl: bool
+    attr_reader user_agent: String
+    attr_reader locale: String?
+    attr_reader date_format: String?
+  end
+
+  module Authentication
+    class Basic
+      def initialize: (String username, String password) -> void
+      def apply: (untyped request) -> untyped
+    end
+    class BasicKey
+      def initialize: (String key) -> void
+      def apply: (untyped request) -> untyped
+    end
+    class Bearer
+      def initialize: (String token) -> void
+      def apply: (untyped request) -> untyped
+    end
+  end
+  type Auth = Authentication
+
+  class Client
+    attr_reader configuration: Configuration
+    attr_reader transport: Transport
+    attr_reader security_administration: SecurityAdministration
+    attr_reader platform_administration: PlatformAdministration
+    attr_reader organization: Organization
+    attr_reader fixed_deposits: TermDeposits
+    attr_reader recurring_deposits: TermDeposits
+    attr_reader clients: Clients
+    attr_reader groups: Groups
+    attr_reader centers: Centers
+    attr_reader collection_sheets: CollectionSheets
+    attr_reader offices: Offices
+    attr_reader loans: Loans
+    attr_reader accounting: Accounting
+    attr_reader loan_products: LoanProducts
+    attr_reader shares: Shares
+    attr_reader account_transfers: AccountTransfers
+    attr_reader reporting: Reporting
+    attr_reader search: Search
+    def initialize: (**untyped) -> void
+    def request: (Symbol | String method, String path, **untyped) -> Result
+    def call: (Symbol | String operation_name, **untyped) -> Result
+    def get: (String path, **untyped) -> Result
+    def post: (String path, **untyped) -> Result
+    def put: (String path, **untyped) -> Result
+    def patch: (String path, **untyped) -> Result
+    def delete: (String path, **untyped) -> Result
+  end
+
+  class Transport
+    attr_reader configuration: Configuration
+    attr_reader connection: untyped
+    def initialize: (Configuration) -> void
+    def perform_request: (Symbol | String method, String path, **untyped) -> Response
+    def request: (Symbol | String method, String path, **untyped) -> Result
+    def get: (String path, **untyped) -> Result
+    def post: (String path, **untyped) -> Result
+    def put: (String path, **untyped) -> Result
+    def patch: (String path, **untyped) -> Result
+    def delete: (String path, **untyped) -> Result
+  end
+
+  class Response
+    attr_reader status: Integer
+    attr_reader headers: untyped
+    attr_reader data: untyped
+    attr_reader body: untyped
+    def request_id: () -> String?
+    def success?: () -> bool
+  end
+
+  class Error < StandardError; end
+  class ConfigurationError < Error; end
+  class ValidationError < Error
+    attr_reader details: untyped
+    def initialize: (String message, ?details: untyped) -> void
+  end
+  class UnknownOperationError < ValidationError; end
+  class TransportError < Error
+    attr_reader cause: Exception?
+  end
+  class SerializationError < Error
+    attr_reader body: untyped
+    attr_reader cause: Exception?
+  end
+  class ApiError < Error
+    attr_reader status: Integer
+    attr_reader payload: untyped
+    attr_reader globalisation_codes: Array[untyped]
+    attr_reader parameter_errors: Array[untyped]
+    attr_reader developer_message: String?
+    attr_reader response: Response?
+  end
+
+  module Result
+    class Success
+      def success?: () -> bool
+      def failure?: () -> bool
+      def value!: () -> untyped
+      def failure: () -> untyped
+    end
+    class Failure
+      def success?: () -> bool
+      def failure?: () -> bool
+      def value!: () -> untyped
+      def failure: () -> untyped
+    end
+  end
+  type Success = Result::Success
+  type Failure = Result::Failure
+
+  class Resource
+    attr_reader client: Client
+    def initialize: (Client) -> void
+    def method_missing: (Symbol, *untyped, **untyped) -> Result
+    def list: (*untyped, **untyped) -> Result
+    def create: (*untyped, **untyped) -> Result
+    def retrieve: (*untyped, **untyped) -> Result
+    def update: (*untyped, **untyped) -> Result
+    def delete: (*untyped, **untyped) -> Result
+    def template: (*untyped, **untyped) -> Result
+    def command: (*untyped, **untyped) -> Result
+    def upload_template: (*untyped, **untyped) -> Result
+    def download_template: (*untyped, **untyped) -> Result
+    def activate: (*untyped, **untyped) -> Result
+    def close: (*untyped, **untyped) -> Result
+    def approve: (*untyped, **untyped) -> Result
+    def reject: (*untyped, **untyped) -> Result
+    def withdraw: (*untyped, **untyped) -> Result
+    def run: (*untyped, **untyped) -> Result
+    def query: (*untyped, **untyped) -> Result
+    def advanced: (*untyped, **untyped) -> Result
+    def generate: (*untyped, **untyped) -> Result
+    def service: (*untyped, **untyped) -> Result
+    def accounts: (*untyped, **untyped) -> Result
+    def status: (*untyped, **untyped) -> Result
+    def save: (*untyped, **untyped) -> Result
+  end
+
+  class OperationCatalog
+    class Operation
+      attr_reader name: String
+      attr_reader method: Symbol
+      attr_reader path: String
+      attr_reader parameters: Array[untyped]
+      attr_reader request_media_types: Array[String]
+      attr_reader response_media_types: Array[String]
+      def path_parameters: () -> Array[untyped]
+      def query_parameters: () -> Array[untyped]
+      def header_parameters: () -> Array[untyped]
+    end
+    def self.default: () -> OperationCatalog
+    def initialize: (?Hash[untyped, untyped]) -> void
+    def fetch: (Symbol | String) -> Operation
+    def include?: (Symbol | String) -> bool
+    def each: () { (Operation) -> void } -> OperationCatalog
+    def size: () -> Integer
+  end
+  type Catalog = OperationCatalog
+  type Endpoint = OperationCatalog::Operation
+
+  class Organization < Resource; end
+  class SecurityAdministration < Resource; end
+  class PlatformAdministration < Resource; end
+  class Clients < Resource; end
+  class Groups < Resource; end
+  class Centers < Resource; end
+  class CollectionSheets < Resource; end
+  class Offices < Resource; end
+  class Loans < Resource; end
+  class LoanProducts < Resource; end
+  class TermDeposits < Resource; end
+  class Accounting < Resource; end
+  class Shares < Resource; end
+  class AccountTransfers < Resource; end
+  class Reporting < Resource; end
+  class Search < Resource; end
+  class Provisioning < Resource; end
+  class Taxes < Resource; end
+  class PaymentTypes < Resource; end
+  class Rates < Resource; end
+  class FloatingRates < Resource; end
+  class InterestRateCharts < Resource; end
+  class Organization
+    attr_reader staff: Organization::Staff
+    attr_reader holidays: Organization::Holidays
+    attr_reader working_days: Organization::WorkingDays
+    attr_reader currencies: Organization::Currencies
+    attr_reader funds: Organization::Funds
+    attr_reader charges: Organization::Charges
+    attr_reader codes: Organization::Codes
+  end
+  class SecurityAdministration
+    attr_reader users: SecurityAdministration::Users
+    attr_reader roles: SecurityAdministration::Roles
+    attr_reader permissions: SecurityAdministration::Permissions
+    attr_reader password_preferences: SecurityAdministration::PasswordPreferences
+    attr_reader two_factor: SecurityAdministration::TwoFactor
+  end
+  class PlatformAdministration
+    attr_reader global_configuration: PlatformAdministration::GlobalConfiguration
+    attr_reader external_services: PlatformAdministration::ExternalServices
+    attr_reader cache: PlatformAdministration::Cache
+    attr_reader hooks: PlatformAdministration::Hooks
+    attr_reader scheduler_jobs: PlatformAdministration::SchedulerJobs
+    attr_reader notifications: PlatformAdministration::Notifications
+    attr_reader scheduler: PlatformAdministration::Scheduler
+  end
+  class Clients
+    attr_reader addresses: Clients::Addresses
+    attr_reader lifecycle: Clients::Lifecycle
+    attr_reader transfers: Clients::Transfers
+  end
+  class TermDeposits
+    attr_reader products: TermDeposits::Products
+    attr_reader accounts: TermDeposits::Accounts
+    attr_reader transactions: TermDeposits::Transactions
+  end
+  class Accounting
+    attr_reader gl_accounts: Accounting::GLAccounts
+    attr_reader rules: Accounting::Rules
+    attr_reader closures: Accounting::Closures
+    attr_reader journal_entries: Accounting::JournalEntries
+    attr_reader accruals: Accounting::Accruals
+    attr_reader financial_activity_mappings: Accounting::FinancialActivityMappings
+  end
+  class Shares
+    attr_reader products: Shares::Products
+    attr_reader accounts: Shares::Accounts
+    attr_reader dividends: Shares::Dividends
+  end
+  class Loans
+    attr_reader schedules: Loans::Schedules
+    attr_reader transactions: Loans::Transactions
+    attr_reader charges: Loans::Charges
+    attr_reader disbursements: Loans::Disbursements
+    attr_reader delinquency: Loans::Delinquency
+  end
+  class LoanProducts
+    attr_reader product_mixes: LoanProducts::ProductMixes
+  end
+  class Reporting
+    attr_reader reports: Reporting::Reports
+    attr_reader runner: Reporting::Runner
+    attr_reader mailing_jobs: Reporting::MailingJobs
+  end
+  class Taxes
+    attr_reader components: Taxes::Components
+    attr_reader groups: Taxes::Groups
+  end
+  class Provisioning
+    attr_reader criteria: Provisioning::Criteria
+    attr_reader entries: Provisioning::Entries
+  end
+  class InterestRateCharts
+    attr_reader slabs: InterestRateCharts::Slabs
+  end
+  class Organization::Staff < Resource; end
+  class Organization::Holidays < Resource; end
+  class Organization::WorkingDays < Resource; end
+  class Organization::Currencies < Resource; end
+  class Organization::Funds < Resource; end
+  class Organization::Charges < Resource; end
+  class Organization::Codes < Resource; end
+  class SecurityAdministration::Users < Resource; end
+  class SecurityAdministration::Roles < Resource; end
+  class SecurityAdministration::Permissions < Resource; end
+  class SecurityAdministration::PasswordPreferences < Resource; end
+  class SecurityAdministration::TwoFactor < Resource; end
+  class PlatformAdministration::GlobalConfiguration < Resource; end
+  class PlatformAdministration::ExternalServices < Resource; end
+  class PlatformAdministration::Cache < Resource; end
+  class PlatformAdministration::Hooks < Resource; end
+  class PlatformAdministration::SchedulerJobs < Resource; end
+  class PlatformAdministration::Notifications < Resource; end
+  class PlatformAdministration::Scheduler < Resource; end
+  class Clients::Addresses < Resource; end
+  class Clients::Lifecycle < Resource; end
+  class Clients::Transfers < Resource; end
+  class TermDeposits::Products < Resource; end
+  class TermDeposits::Accounts < Resource; end
+  class TermDeposits::Transactions < Resource; end
+  class Accounting::GLAccounts < Resource; end
+  class Accounting::Rules < Resource; end
+  class Accounting::Closures < Resource; end
+  class Accounting::JournalEntries < Resource; end
+  class Accounting::Accruals < Resource; end
+  class Accounting::FinancialActivityMappings < Resource; end
+  class Shares::Products < Resource; end
+  class Shares::Accounts < Resource; end
+  class Shares::Dividends < Resource; end
+  class Loans::Schedules < Resource; end
+  class Loans::Transactions < Resource; end
+  class Loans::Charges < Resource; end
+  class Loans::Disbursements < Resource; end
+  class Loans::Delinquency < Resource; end
+  class LoanProducts::ProductMixes < Resource; end
+  class Reporting::Reports < Resource; end
+  class Reporting::Runner < Resource; end
+  class Reporting::MailingJobs < Resource; end
+  class Taxes::Components < Resource; end
+  class Taxes::Groups < Resource; end
+  class Provisioning::Criteria < Resource; end
+  class Provisioning::Entries < Resource; end
+  class InterestRateCharts::Slabs < Resource; end
 end
