@@ -4,7 +4,7 @@ module Fineract
   # A client with an immutable, independently validated configuration.
   class Client
     attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization,
-                :fixed_deposits, :recurring_deposits, :savings, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search, :client_collaterals, :collateral_management, :credit_bureau, :glim, :gsim, :external_asset_owners, :working_capital_loan_products, :working_capital_loans, :entity_datatable_checks, :entity_field_configuration, :cash_management
+                :fixed_deposits, :recurring_deposits, :savings, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search, :client_collaterals, :collateral_management, :credit_bureau, :glim, :gsim, :external_asset_owners, :working_capital_loan_products, :working_capital_loans, :entity_datatable_checks, :entity_field_configuration, :cash_management, :templates, :documents, :surveys, :self_service
 
     def initialize(**options)
       @configuration = Configuration.new(Fineract.config.to_h.merge(options))
@@ -44,6 +44,10 @@ module Fineract
       @entity_datatable_checks = EntityDatatableChecks.new(self)
       @entity_field_configuration = EntityFieldConfiguration.new(self)
       @cash_management = CashManagement.new(self)
+      @templates = Templates.new(self)
+      @documents = Documents.new(self)
+      @surveys = Surveys.new(self)
+      @self_service = SelfService.new(self)
     end
 
     alias security security_administration

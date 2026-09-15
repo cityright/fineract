@@ -8,8 +8,8 @@ module Fineract
     def initialize(client) = @client = client
 
     private
-    def call(operation, path: {}, query: {}, body: nil, request_type: nil, response_type: nil, idempotent: nil)
-      client.call(operation, path: path, query: query, body: body, request_type: request_type, response_type: response_type, idempotent: idempotent)
+    def call(operation, path: {}, query: {}, headers: {}, body: nil, request_type: nil, response_type: nil, idempotent: nil)
+      client.call(operation, path: path, query: query, headers: headers, body: body, request_type: request_type, response_type: response_type, idempotent: idempotent)
     end
     def id!(value, name)
       return value if value.is_a?(Integer) && value.positive?
