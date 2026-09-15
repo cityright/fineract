@@ -4,7 +4,7 @@ module Fineract
   # A client with an immutable, independently validated configuration.
   class Client
     attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization,
-                :fixed_deposits, :recurring_deposits, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search
+                :fixed_deposits, :recurring_deposits, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search, :client_collaterals, :collateral_management, :credit_bureau, :glim, :gsim, :external_asset_owners, :working_capital_loan_products, :working_capital_loans
 
     def initialize(**options)
       @configuration = Configuration.new(Fineract.config.to_h.merge(options))
@@ -26,6 +26,14 @@ module Fineract
       @account_transfers = AccountTransfers.new(self)
       @reporting = Reporting.new(self)
       @search = Search.new(self)
+      @client_collaterals = ClientCollaterals.new(self)
+      @collateral_management = CollateralManagement.new(self)
+      @credit_bureau = CreditBureau.new(self)
+      @glim = Glim.new(self)
+      @gsim = Gsim.new(self)
+      @external_asset_owners = ExternalAssetOwners.new(self)
+      @working_capital_loan_products = WorkingCapitalLoanProducts.new(self)
+      @working_capital_loans = WorkingCapitalLoans.new(self)
       @provisioning = Provisioning.new(self)
       @taxes = Taxes.new(self)
       @payment_types = PaymentTypes.new(self)

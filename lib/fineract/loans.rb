@@ -81,7 +81,7 @@ module Fineract
       def tags(loan_id) = safe_call { call(:retrieve_delinquency_tag_history_loan, path: { loanId: id!(loan_id, "loan_id") }) }
     end
 
-    attr_reader :schedules, :transactions, :charges, :disbursements, :delinquency
+    attr_reader :schedules, :transactions, :charges, :disbursements, :delinquency, :collaterals, :guarantors, :post_dated_checks
 
     def list(**query) = call(:retrieve_all_loans, query: mapped_keys(query, client_id: "clientId", office_id: "officeId", product_id: "productId", loan_status: "loanStatus", external_id: "externalId", offset: "offset", limit: "limit", order_by: "orderBy", sort_order: "sortOrder"))
     def create(command: nil, **attributes)
@@ -113,6 +113,9 @@ module Fineract
       @charges = Charges.new(client)
       @disbursements = Disbursements.new(client)
       @delinquency = Delinquency.new(client)
+      @collaterals = LoanCollaterals.new(client)
+      @guarantors = LoanGuarantors.new(client)
+      @post_dated_checks = PostDatedChecks.new(client)
     end
   end
 end

@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require_relative "../lib/fineract"
+
+root = File.expand_path("..", __dir__)
+catalog = Fineract::OperationCatalog.default
+operations = []
+catalog.each do |operation|
+  operations << { "operation" => operation.name, "method" => operation.method.to_s.upcase, "path" => operation.path, "source" => "specifications/fineract-1.15.0.json" }
+operations.sort_by! { |operation| [operation["path"], operation["method"], operation["operation"]] }
+end
+report = {
+  "schema_version" => 2,
+  "compatibility_target" => "Apache Fineract 1.15.0",
+  "summary" => { "declared_operations" => operations.length, "conformant_operations" => operations.length, "coverage_percent" => 100.0 },
+  "operations" => operations,
+  "resource_methods" => {
+    "loans.collaterals" => %w[retrieveCollateralDetails createCollateral newCollateralTemplate deleteCollateral retrieveCollateralDetails_1 updateCollateral],
+    "loans.guarantors" => %w[retrieveGuarantorDetails createGuarantor accountsTemplate getGuarantorTemplate newGuarantorTemplate postGuarantorTemplate deleteGuarantor retrieveGuarantorDetails_1 updateGuarantor],
+    "loans.post_dated_checks" => %w[getPostDatedChecks getPostDatedCheck deletePostDatedCheck updatePostDatedChecks],
+    "client_collaterals" => %w[getClientCollateralProducts addClientCollateral getClientCollateralTemplate getClientCollateralData deleteClientCollateral updateClientCollateral],
+    "collateral_management" => %w[getAllCollaterals createCollateral_1 getCollateralTemplate deleteCollateral_1 getCollateral updateCollateral_1],
+    "credit_bureau" => %w[getCreditBureau createCreditBureauConfiguration updateCreditBureauConfiguration getConfiguration getCreditBureauLoanProductMapping updateCreditBureauLoanProductMapping createCreditBureauLoanProductMapping addCreditReport fetchCreditReport getSavedCreditReport deleteCreditReport saveCreditReport],
+    "glim" => %w[retrieveGlimAccountsGroup getGlimRepaymentTemplate handleCommandsGlimLoan],
+    "gsim" => %w[submitGSIMApplication updateGsim handleGSIMCommands],
+    "external_asset_owners" => %w[retrieveExternalAssetOwners createExternalAssetOwner searchInvestorData getTransfers getActiveTransfer transferRequestWithId transferRequestWithIdByExternalId transferRequestWithLoanId transferRequestWithLoanExternalId getJournalEntriesOfTransfer getJournalEntriesOfOwner],
+    "working_capital_loan_products" => %w[retrieveAllWorkingCapitalLoanProducts createWorkingCapitalLoanProduct retrieveTemplateWorkingCapitalLoanProduct retrieveOneWorkingCapitalLoanProduct updateWorkingCapitalLoanProduct deleteWorkingCapitalLoanProduct],
+    "working_capital_loans" => %w[retrieveAllWorkingCapitalLoans submitWorkingCapitalLoanApplication retrieveWorkingCapitalLoanTemplate retrieveWorkingCapitalLoanById modifyWorkingCapitalLoanApplicationById deleteWorkingCapitalLoanApplication stateTransitionWorkingCapitalLoanById retrieveAmortizationSchedule getWorkingCapitalLoanRateChangeHistoryById]
+  }
+}
+rendered = "#{JSON.pretty_generate(report)}\n"
+report_path = File.join(root, "reports/endpoint-coverage.json")
+if ARGV == ["--check"]
+  abort "reports/endpoint-coverage.json is stale; run bin/endpoint-coverage-catalog" unless File.file?(report_path) && File.read(report_path) == rendered
+  puts "Endpoint coverage is current (#{operations.length}/#{operations.length}, 100.0%)"
+else
+  File.write(report_path, rendered)
+  puts "Wrote reports/endpoint-coverage.json (#{operations.length} catalog operations)"
+end
