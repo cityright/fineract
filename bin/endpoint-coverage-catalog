@@ -32,7 +32,9 @@ report = {
     "gsim" => %w[submitGSIMApplication updateGsim handleGSIMCommands],
     "external_asset_owners" => %w[retrieveExternalAssetOwners createExternalAssetOwner searchInvestorData getTransfers getActiveTransfer transferRequestWithId transferRequestWithIdByExternalId transferRequestWithLoanId transferRequestWithLoanExternalId getJournalEntriesOfTransfer getJournalEntriesOfOwner],
     "working_capital_loan_products" => %w[retrieveAllWorkingCapitalLoanProducts createWorkingCapitalLoanProduct retrieveTemplateWorkingCapitalLoanProduct retrieveOneWorkingCapitalLoanProduct updateWorkingCapitalLoanProduct deleteWorkingCapitalLoanProduct],
-    "working_capital_loans" => %w[retrieveAllWorkingCapitalLoans submitWorkingCapitalLoanApplication retrieveWorkingCapitalLoanTemplate retrieveWorkingCapitalLoanById modifyWorkingCapitalLoanApplicationById deleteWorkingCapitalLoanApplication stateTransitionWorkingCapitalLoanById retrieveAmortizationSchedule getWorkingCapitalLoanRateChangeHistoryById]
+    "working_capital_loans" => %w[retrieveAllWorkingCapitalLoans submitWorkingCapitalLoanApplication retrieveWorkingCapitalLoanTemplate retrieveWorkingCapitalLoanById modifyWorkingCapitalLoanApplicationById deleteWorkingCapitalLoanApplication stateTransitionWorkingCapitalLoanById retrieveAmortizationSchedule getWorkingCapitalLoanRateChangeHistoryById],
+    "entity_datatable_checks" => %w[retrieveAllEntityDatatableChecks createEntityDatatableCheck retrieveTemplateEntityDatatableChecks deleteEntityDatatableCheck],
+    "entity_field_configuration" => %w[getAddresses]
   }
 }
 rendered = "#{JSON.pretty_generate(report)}\n"

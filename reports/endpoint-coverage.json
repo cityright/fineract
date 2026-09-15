@@ -5937,6 +5937,15 @@
       "stateTransitionWorkingCapitalLoanById",
       "retrieveAmortizationSchedule",
       "getWorkingCapitalLoanRateChangeHistoryById"
+    ],
+    "entity_datatable_checks": [
+      "retrieveAllEntityDatatableChecks",
+      "createEntityDatatableCheck",
+      "retrieveTemplateEntityDatatableChecks",
+      "deleteEntityDatatableCheck"
+    ],
+    "entity_field_configuration": [
+      "getAddresses"
     ]
   }
 }

@@ -63,6 +63,8 @@ module Fineract
     attr_reader shares: Shares
     attr_reader account_transfers: AccountTransfers
     attr_reader reporting: Reporting
+    attr_reader entity_datatable_checks: EntityDatatableChecks
+    attr_reader entity_field_configuration: EntityFieldConfiguration
     attr_reader search: Search
     def initialize: (**untyped) -> void
     def request: (Symbol | String method, String path, **untyped) -> Result
@@ -203,6 +205,8 @@ module Fineract
   class AccountTransfers < Resource; end
   class Reporting < Resource; end
   class Search < Resource; end
+  class EntityDatatableChecks < Resource; end
+  class EntityFieldConfiguration < Resource; end
   class Provisioning < Resource; end
   class Taxes < Resource; end
   class PaymentTypes < Resource; end

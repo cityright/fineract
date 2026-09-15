@@ -34,7 +34,7 @@ module Fineract
     def validate_contract(contract, attributes, method = nil)
       result = method ? contract.public_send(method, attributes) : contract.new.call(attributes)
       return result unless result.respond_to?(:success?)
-      raise ValidationError, result.errors.to_h.inspect unless result.success?
+      raise ValidationError.new(result.errors.to_h.inspect, details: result.errors.to_h) unless result.success?
     end
   end
 end

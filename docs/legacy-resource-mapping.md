@@ -27,6 +27,7 @@ path, query command, and request body remain request-compatible.
 | `Client::UpdateAddress.save` | `client.clients.addresses.update(id, ...)` |
 | `Client::RetrieveClientAccounts.find` | `client.clients.accounts(id)` |
 | `Client::EntityFieldConfiguration.find` | `client.clients.field_configuration(entity)` |
+
 | `Client::ActivateClient.create` | `client.clients.lifecycle.activate(id, ...)` |
 | `Client::CloseClient.create` | `client.clients.lifecycle.close(id, ...)` |
 | `Client::ReactivateClient.create` | `client.clients.lifecycle.reactivate(id, ...)` |
@@ -56,6 +57,13 @@ path, query command, and request body remain request-compatible.
 The legacy login and authentication configuration classes are replaced by
 `Fineract.configure`, `Fineract.client`, and the configured authentication
 strategy; they are not resource endpoint operations.
+
+Entity metadata is also available directly from the client:
+
+| Capability | Resource methods |
+| --- | --- |
+| Entity-datatable checks | `client.entity_datatable_checks.list`, `create`, `template`, `delete` |
+| Entity field configuration | `client.entity_field_configuration.retrieve(entity)` (or `find(entity)`) |
 
 ## Loan servicing coverage
 
