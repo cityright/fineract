@@ -1,4 +1,15 @@
-# Legacy endpoint mapping
+# Migrating from the pre-1.0 Flexirest API
+
+This guide is for applications that used the pre-1.0 `Fineract::Api::*` classes. The 1.0 API is resource-oriented: create a `Fineract::Client` and call methods on the resource it exposes.
+
+```ruby
+client = Fineract.client
+client.clients.list
+client.loans.retrieve(loan_id)
+```
+
+The old classes are not compatibility aliases. `Fineract::Api::*` wrappers are intentionally unavailable in 1.0; update call sites to the resource methods below.
+
 
 The old Flexirest classes map to the phase-one resource surface below. All
 resource methods use the pinned OpenAPI operation catalog, so the HTTP verb,
@@ -100,3 +111,123 @@ Primary accounting APIs are available from `client.accounting`:
 | Run reports | `client.reporting.runner.run(name, format: :json/:csv/:pdf/:xls/:html)`, `available_exports` |
 | Report mailing jobs | `client.reporting.mailing_jobs.list`, `create`, `retrieve`, `update`, `delete`, `template`, `run_history` |
 | Search | `client.search.query`, `advanced`, `template` |
+
+## Results and errors
+
+Every resource operation returns `Fineract::Success` or `Fineract::Failure`.
+A success contains a `Fineract::Response` (`status`, `headers`, `data`, and
+`body`). A failure contains a typed error:
+
+| Situation | Failure value |
+| --- | --- |
+| Invalid local argument, ID, or request body | `Fineract::ValidationError` |
+| Non-2xx Fineract response | `Fineract::ApiError` (`status`, `payload`, `parameter_errors`, `developer_message`) |
+| Timeout or connection failure | `Fineract::TransportError` (`cause`) |
+| Response decoding failure | `Fineract::SerializationError` (`body`, `cause`) |
+| Unknown operation passed to `client.call` | `Fineract::UnknownOperationError` |
+
+Handle the result explicitly:
+
+```ruby
+result = client.clients.retrieve(42)
+
+if result.success?
+  puts result.value!.data["displayName"]
+else
+  error = result.failure
+  warn "Fineract failed (#{error.class}): #{error.message}"
+end
+```
+
+HTTP and transport failures are values, not exceptions, for ordinary resource
+calls. `ConfigurationError` is different: invalid client configuration is
+raised immediately when the client is constructed.
+
+## Configuration and authentication
+
+The old API read `FINERACT_BASE_URL` and authentication values indirectly and
+used `Fineract::Api::Auth::BaseConfiguration`, `Keys`, `Credentials`, and
+`Login`. The new API does not read environment variables on its own. Configure
+the client explicitly:
+
+```ruby
+Fineract.configure do |config|
+  config.base_url = "https://fineract.example.com/fineract-provider/api"
+  config.tenant_id = "default"
+  config.username = ENV.fetch("FINERACT_USERNAME")
+  config.password = ENV.fetch("FINERACT_PASSWORD")
+end
+
+client = Fineract.client
+```
+
+`base_url` is the provider API root; `api_version` (default `"v1"`) is
+appended by the client. The tenant is sent as `Fineract-Platform-TenantId`.
+
+For an already-issued token or pre-encoded Basic credential, use one explicit
+strategy. Only one authentication strategy may be configured:
+
+```ruby
+client = Fineract.client(
+  base_url: "https://fineract.example.com/fineract-provider/api",
+  tenant_id: "default",
+  bearer_token: ENV.fetch("FINERACT_TOKEN")
+)
+# Or: basic_key: ENV.fetch("FINERACT_BASIC_KEY")
+```
+
+A custom scheme can be passed as an object responding to `apply(request)` via
+`authentication`. `Fineract::Api::Login.create` has no 1.0 wrapper; use the
+server's issued token, credentials, or a custom authentication strategy.
+`Base` and `AuthorisedBase` were Flexirest implementation classes, not
+resource operations, and have no replacement to subclass.
+
+## Common before/after changes
+
+```ruby
+# Before
+Fineract::Api::Client::ListClients.all
+Fineract::Api::Client::CreateClient.create(
+  "firstname" => "Jane", "lastname" => "Doe", "officeId" => 1
+)
+
+# After: resource methods use snake_case Ruby keywords and return a Result
+result = client.clients.list
+result = client.clients.create(firstname: "Jane", lastname: "Doe", office_id: 1)
+```
+
+```ruby
+# Before: the ID was part of the Flexirest parameter hash
+Fineract::Api::Groups::UpdateGroup.save("id" => 7, "name" => "New name")
+
+# After: the ID is a positional resource argument
+client.groups.update(7, name: "New name")
+```
+
+```ruby
+# Before
+Fineract::Api::Client::ActivateClient.create(
+  id: 42, "activationDate" => "15 September 2026"
+)
+
+# After
+result = client.clients.lifecycle.activate(42, activation_date: "15 September 2026")
+result.success? ? result.value!.status : result.failure.message
+```
+
+## Behavioral differences to check during migration
+
+* There is no dynamic Flexirest class API, `save`/`remove` convention, or
+  compatibility wrapper. Resource names and operations are ordinary Ruby
+  methods.
+* Request keys are normally snake_case Ruby keywords; resources translate them
+  to camelCase wire keys. Response data remains the decoded Fineract payload.
+* IDs are validated locally as positive integers. Invalid input produces a
+  `Failure(ValidationError)` without an HTTP request.
+* Non-2xx responses, transport failures, and serialization failures are typed
+  `Failure` values. Inspect `ApiError.payload` and `ApiError.parameter_errors`
+  for Fineract details.
+* Safe/idempotent requests can be retried according to `retry_options`; mutations
+  are not retried by default.
+* Configuration is explicit and validated. Credentials must not be embedded in
+  `base_url`, and a client cannot combine authentication strategies.

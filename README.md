@@ -5,6 +5,8 @@ A framework-agnostic Ruby client for Apache Fineract.
 The 1.0 line requires Ruby 3.2 or newer and does not depend on Rails. It can be
 used from plain Ruby or any Ruby web framework.
 
+For applications upgrading from the pre-1.0 Flexirest API, see the [breaking-change migration guide](docs/legacy-resource-mapping.md).
+
 ## Installation
 
 Add the gem to your Gemfile:
