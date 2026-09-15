@@ -31,7 +31,7 @@ module Fineract
       def retrieve(role_id) = safe_call { call(:retrieve_one_role, path: { roleId: id!(role_id, "role_id") }) }
       def update(role_id, description:) = safe_call { call(:update_role, path: { roleId: id!(role_id, "role_id") }, body: { "description" => description }) }
       def delete(role_id) = safe_call { call(:delete_role, path: { roleId: id!(role_id, "role_id") }) }
-      def command(role_id, command:) = safe_call { call(:handle_commands_role, path: { roleId: id!(role_id, "role_id") }, query: { "command" => command }) }
+      def command(role_id, command:) = safe_call { call(:handle_commands_role, path: { roleId: id!(role_id, "role_id") }, query: { "command" => command }, idempotent: false) }
       def permissions(role_id) = safe_call { call(:retrieve_role_permissions, path: { roleId: id!(role_id, "role_id") }) }
       def update_permissions(role_id, permissions:) = safe_call { call(:update_role_permissions, path: { roleId: id!(role_id, "role_id") }, body: { "permissions" => permissions }) }
     end

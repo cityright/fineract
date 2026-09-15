@@ -34,6 +34,9 @@ report = {
   "operations" => operations
 }
 report["resource_methods"] = {
+  "groups" => %w[retrieveAllGroups createGroup getBulkTemplateGroup retrieveTemplateGroup postBulkTemplateGroup deleteGroup retrieveOneGroup handleCommandsGroup updateGroup retrieveAccountsGroup unassignLoanOfficerGroup retrieveGlimAccountsGroup retrieveGsimAccountsGroup],
+  "centers" => %w[retrieveAllCenters createCenter getBulkTemplateCenter retrieveTemplateCenter postBulkTemplateCenter deleteCenter retrieveOneCenter handleCommandsCenter updateCenter retrieveGroupAccountsCenter],
+  "collection_sheets" => %w[generateCollectionSheet],
   "organization.staff" => %w[retrieveAllStaff createStaff getBulkTemplateStaff postTemplate retrieveOneStaff updateStaff],
   "organization.holidays" => %w[retrieveAllHolidays createHoliday retrieveRepaymentScheduleUpdationTyeOptions retrieveOneHoliday handleCommandsHoliday updateHoliday deleteHoliday],
   "organization.working_days" => %w[retrieveAllWorkingDays updateWorkingDay retrieveTemplateWorkingDays],

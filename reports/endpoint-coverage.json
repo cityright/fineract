@@ -225,6 +225,36 @@
     }
   ],
   "resource_methods": {
+    "groups": [
+      "retrieveAllGroups",
+      "createGroup",
+      "getBulkTemplateGroup",
+      "retrieveTemplateGroup",
+      "postBulkTemplateGroup",
+      "deleteGroup",
+      "retrieveOneGroup",
+      "handleCommandsGroup",
+      "updateGroup",
+      "retrieveAccountsGroup",
+      "unassignLoanOfficerGroup",
+      "retrieveGlimAccountsGroup",
+      "retrieveGsimAccountsGroup"
+    ],
+    "centers": [
+      "retrieveAllCenters",
+      "createCenter",
+      "getBulkTemplateCenter",
+      "retrieveTemplateCenter",
+      "postBulkTemplateCenter",
+      "deleteCenter",
+      "retrieveOneCenter",
+      "handleCommandsCenter",
+      "updateCenter",
+      "retrieveGroupAccountsCenter"
+    ],
+    "collection_sheets": [
+      "generateCollectionSheet"
+    ],
     "organization.staff": [
       "retrieveAllStaff",
       "createStaff",

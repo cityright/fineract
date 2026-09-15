@@ -1,23 +1,37 @@
 # frozen_string_literal: true
-
 module Fineract
   class Groups < Resource
     GROUP_FIELDS = { office_id: "officeId", activation_date: "activationDate", date_format: "dateFormat", locale: "locale", active: "active", name: "name", external_id: "externalId" }.freeze
-    def list(**filters) = call(:retrieve_all_groups, query: mapped_keys(filters, office_id: "officeId", staff_id: "staffId", external_id: "externalId", under_hierarchy: "underHierarchy", paged: "paged", order_by: "orderBy", sort_order: "sortOrder", orphans_only: "orphansOnly"))
+    def list(**filters) = call(:retrieve_all_groups, query: mapped_keys(filters, office_id: "officeId", staff_id: "staffId", external_id: "externalId", name: "name", under_hierarchy: "underHierarchy", paged: "paged", offset: "offset", limit: "limit", order_by: "orderBy", sort_order: "sortOrder", orphans_only: "orphansOnly"))
     def create(**attributes)
       validate_contract(Contracts::PhaseOne::GroupCreate, attributes)
       call(:create_group, body: mapped_keys(attributes, GROUP_FIELDS))
-    rescue ValidationError => e
-      Failure.new(e)
+    rescue ValidationError => e then Failure.new(e)
     end
-    def retrieve(group_id, staff_in_selected_office_only: nil, role_id: nil) = safe_call { call(:retrieve_one_group, path: { groupId: id!(group_id, "group_id") }, query: { "staffInSelectedOfficeOnly" => staff_in_selected_office_only, "roleId" => role_id }.compact) }
-    def update(group_id, **attributes) = safe_call { call(:update_group, path: { groupId: id!(group_id, "group_id") }, body: mapped_keys(attributes, GROUP_FIELDS)) }
-    def delete(group_id) = safe_call { call(:delete_group, path: { groupId: id!(group_id, "group_id") }) }
-    def template(**filters) = call(:retrieve_template_group, query: mapped_keys(filters, office_id: "officeId", center_id: "centerId", staff_in_selected_office_only: "staffInSelectedOfficeOnly"))
+    def retrieve(id, staff_in_selected_office_only: nil, role_id: nil) = safe_call { call(:retrieve_one_group, path: { groupId: id!(id, "group_id") }, query: { "staffInSelectedOfficeOnly" => staff_in_selected_office_only, "roleId" => role_id }.compact) }
+    def update(id, **a) = safe_call { call(:update_group, path: { groupId: id!(id, "group_id") }, body: mapped_keys(a, GROUP_FIELDS), idempotent: false) }
+    def delete(id) = safe_call { call(:delete_group, path: { groupId: id!(id, "group_id") }, idempotent: false) }
+    def download_template(**q) = call(:get_bulk_template_group, query: mapped_keys(q), response_type: :binary)
+    def upload_template(uploaded_input_stream:, locale: nil, date_format: nil) = call(:post_bulk_template_group, body: { "uploadedInputStream" => uploaded_input_stream, "locale" => locale, "dateFormat" => date_format }.compact, request_type: "multipart/form-data", idempotent: false)
+    def template(**q) = call(:retrieve_template_group, query: mapped_keys(q))
+    def accounts(id) = safe_call { call(:retrieve_accounts_group, path: { groupId: id!(id, "group_id") }) }
+    alias account_overview accounts
+    def command(id, command:, **a) = safe_call { call(:handle_commands_group, path: { groupId: id!(id, "group_id") }, query: { "command" => command }, body: mapped_keys(a), idempotent: false) }
+    def activate(id, activation_date:, **a) = command(id, command: "activate", activation_date: activation_date, **a)
+    def close(id, closure_date:, closure_reason_id:, **a) = command(id, command: "close", closure_date: closure_date, closure_reason_id: closure_reason_id, **a)
+    def assign_staff(id, staff_id:, **a) = command(id, command: "assignStaff", staff_id: staff_id, **a)
+    def unassign_staff(id, staff_id:) = safe_call { call(:unassign_loan_officer_group, path: { groupId: id!(id, "group_id") }, body: { "staffId" => id!(staff_id, "staff_id") }, idempotent: false) }
+    def associate_clients(id, clients:) = safe_call { command(id, command: "associateClients", clients: members(clients)) }
+    def disassociate_clients(id, clients:) = safe_call { command(id, command: "disassociateClients", clients: members(clients)) }
+    def transfer_clients(id, destination_group_id:, clients:, **a) = safe_call { command(id, command: "transferClients", destination_group_id: id!(destination_group_id, "destination_group_id"), clients: members(clients), **a) }
+    def assign_role(id, client_id:, role:) = command(id, command: "assignRole", client_id: id!(client_id, "client_id"), role: role)
+    def unassign_role(id, client_id:, role_id:) = command(id, command: "unassignRole", client_id: id!(client_id, "client_id"), role_id: id!(role_id, "role_id"))
+    def update_role(id, client_id:, role:) = command(id, command: "updateRole", client_id: id!(client_id, "client_id"), role: role)
+    def collection_sheet(id, **a) = command(id, command: "generateCollectionSheet", **a)
     private
-    def validate_contract(contract, attributes)
-      result = contract.new.call(attributes)
-      raise ValidationError, result.errors.to_h.inspect unless result.success?
+    def members(values)
+      raise ValidationError, "clients must be a non-empty Array" unless values.is_a?(Array) && !values.empty?
+      values.map { |v| v.is_a?(Hash) ? v : { "id" => id!(v, "client_id") } }
     end
   end
 end
