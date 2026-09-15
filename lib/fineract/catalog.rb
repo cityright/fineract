@@ -9,7 +9,7 @@ module Fineract
 
     Operation = Data.define(
       :name, :method, :path, :parameters, :request_media_types, :response_media_types,
-      :request_required, :request_schema
+      :request_required, :request_schema, :deprecated
     ) do
       def path_parameters = parameters.select { |parameter| parameter["in"] == "path" }
       def query_parameters = parameters.select { |parameter| parameter["in"] == "query" }
@@ -35,7 +35,8 @@ module Fineract
             definition.dig("requestBody", "content")&.keys || [],
             response_media_types(definition.fetch("responses")),
             definition.dig("requestBody", "required") == true,
-            dereference(definition.dig("requestBody", "content")&.values&.first&.fetch("schema", nil), document)
+            dereference(definition.dig("requestBody", "content")&.values&.first&.fetch("schema", nil), document),
+            definition["deprecated"] == true
           )
           @operations[name] = operation
           @operations[underscore(name)] ||= operation
@@ -74,4 +75,55 @@ module Fineract
 
   Catalog = OperationCatalog
   Endpoint = OperationCatalog::Operation
+
+  # The explicit low-level API surface generated from the pinned document.
+  class OperationRegistry
+    Entry = Data.define(:name, :operation) do
+      def method = operation.method
+      def path = operation.path
+      def signature
+        {
+          "operation" => name, "method" => method.to_s.upcase, "path" => path,
+          "path_parameters" => operation.path_parameters.map { |p| p.fetch("name") }.sort,
+          "query_parameters" => operation.query_parameters.map { |p| p.fetch("name") }.sort,
+          "header_parameters" => operation.header_parameters.map { |p| p.fetch("name") }.sort,
+          "request_media_types" => operation.request_media_types.sort,
+          "response_media_types" => operation.response_media_types.sort,
+          "deprecated" => operation.deprecated
+        }
+      end
+    end
+
+    def self.default = (@default ||= new)
+
+    def initialize(catalog = OperationCatalog.default)
+      @entries = {}
+      @aliases = {}
+      catalog.each { |operation| register(operation) }
+      @entries.freeze
+      @aliases.freeze
+    end
+
+    def register(operation)
+      name = operation.name.to_s
+      raise ArgumentError, "operation already registered: #{name}" if @entries.key?(name)
+      entry = Entry.new(name, operation)
+      @entries[name] = entry
+      @aliases[underscore(name)] = entry
+    end
+
+    def fetch(name)
+      @entries.fetch(name.to_s) { @aliases.fetch(name.to_s) { raise KeyError, name.to_s } }
+    end
+
+    def include?(name) = @entries.key?(name.to_s) || @aliases.key?(name.to_s)
+    def each(&block) = @entries.values.sort_by(&:name).each(&block)
+    def size = @entries.size
+
+    private
+
+    def underscore(name)
+      name.gsub(/([A-Z]+)([A-Z][a-z])/, "\\1_\\2").gsub(/([a-z\d])([A-Z])/, "\\1_\\2").downcase
+    end
+  end
 end

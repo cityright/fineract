@@ -70,7 +70,7 @@ module Fineract
     end
 
     def call(operation_name, path: {}, query: {}, headers: {}, body: nil, request_type: nil, response_type: nil, idempotent: nil, idempotency_key: nil, path_params: nil, header: nil)
-      operation = OperationCatalog.default.fetch(operation_name)
+      operation = OperationRegistry.default.fetch(operation_name).operation
       path = path_params unless path_params.nil?
       headers = header unless header.nil?
       validate_inputs!(operation, path, query, headers, body)
