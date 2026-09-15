@@ -5946,6 +5946,29 @@
     ],
     "entity_field_configuration": [
       "getAddresses"
+    ],
+    "cash_management": [
+      "retrieveAllCashiers",
+      "retrieveAllCashierJournals",
+      "retrieveAllTellers",
+      "createTeller",
+      "deleteTeller",
+      "retrieveOneTeller",
+      "updateTeller",
+      "retrieveAllCashiersForTeller",
+      "createCashierForTeller",
+      "retrieveCashierTemplateForTeller",
+      "deleteCashierForTeller",
+      "retrieveOneCashierForTeller",
+      "updateCashierForTeller",
+      "allocateCashToCashier",
+      "settleCashFromCashier",
+      "retrieveCashierTransactionsWithSummary",
+      "retrieveCashierTransactions",
+      "retrieveTemplateCashierTransaction",
+      "retrieveAllJournalsForTeller",
+      "retrieveAllTransactionsForTeller",
+      "retrieveOneTransactionForTeller"
     ]
   }
 }

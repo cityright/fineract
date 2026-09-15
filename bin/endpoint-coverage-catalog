@@ -34,7 +34,8 @@ report = {
     "working_capital_loan_products" => %w[retrieveAllWorkingCapitalLoanProducts createWorkingCapitalLoanProduct retrieveTemplateWorkingCapitalLoanProduct retrieveOneWorkingCapitalLoanProduct updateWorkingCapitalLoanProduct deleteWorkingCapitalLoanProduct],
     "working_capital_loans" => %w[retrieveAllWorkingCapitalLoans submitWorkingCapitalLoanApplication retrieveWorkingCapitalLoanTemplate retrieveWorkingCapitalLoanById modifyWorkingCapitalLoanApplicationById deleteWorkingCapitalLoanApplication stateTransitionWorkingCapitalLoanById retrieveAmortizationSchedule getWorkingCapitalLoanRateChangeHistoryById],
     "entity_datatable_checks" => %w[retrieveAllEntityDatatableChecks createEntityDatatableCheck retrieveTemplateEntityDatatableChecks deleteEntityDatatableCheck],
-    "entity_field_configuration" => %w[getAddresses]
+    "entity_field_configuration" => %w[getAddresses],
+    "cash_management" => %w[retrieveAllCashiers retrieveAllCashierJournals retrieveAllTellers createTeller deleteTeller retrieveOneTeller updateTeller retrieveAllCashiersForTeller createCashierForTeller retrieveCashierTemplateForTeller deleteCashierForTeller retrieveOneCashierForTeller updateCashierForTeller allocateCashToCashier settleCashFromCashier retrieveCashierTransactionsWithSummary retrieveCashierTransactions retrieveTemplateCashierTransaction retrieveAllJournalsForTeller retrieveAllTransactionsForTeller retrieveOneTransactionForTeller]
   }
 }
 rendered = "#{JSON.pretty_generate(report)}\n"

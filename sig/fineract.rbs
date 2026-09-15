@@ -287,6 +287,16 @@ module Fineract
   class InterestRateCharts
     attr_reader slabs: InterestRateCharts::Slabs
   end
+  class Client
+    attr_reader cash_management: CashManagement
+  end
+  class CashManagement < Resource
+    attr_reader cashiers: CashManagement::Cashiers
+    attr_reader cashier_journals: CashManagement::CashierJournals
+  end
+  class CashManagement::Cashiers < Resource; end
+  class CashManagement::CashierJournals < Resource; end
+  class CashManagement::TellerCashiers < Resource; end
   class Organization::Staff < Resource; end
   class Organization::Holidays < Resource; end
   class Organization::WorkingDays < Resource; end

@@ -19,6 +19,7 @@ require_relative "fineract/contracts/term_deposits"
 require_relative "fineract/contracts/savings"
 require_relative "fineract/contracts/phase_one"
 require_relative "fineract/contracts/entity_metadata"
+require_relative "fineract/contracts/cash_management"
 require_relative "fineract/security_administration"
 require_relative "fineract/platform_administration"
 require_relative "fineract/organization"
@@ -42,6 +43,7 @@ require_relative "fineract/account_transfers"
 require_relative "fineract/reporting"
 require_relative "fineract/search"
 require_relative "fineract/entity_metadata"
+require_relative "fineract/cash_management"
 
 # Public namespace for the Fineract Ruby client.
 module Fineract

@@ -4,7 +4,7 @@ module Fineract
   # A client with an immutable, independently validated configuration.
   class Client
     attr_reader :configuration, :transport, :security_administration, :platform_administration, :organization,
-                :fixed_deposits, :recurring_deposits, :savings, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search, :client_collaterals, :collateral_management, :credit_bureau, :glim, :gsim, :external_asset_owners, :working_capital_loan_products, :working_capital_loans, :entity_datatable_checks, :entity_field_configuration
+                :fixed_deposits, :recurring_deposits, :savings, :clients, :groups, :centers, :collection_sheets, :offices, :loans, :accounting, :loan_products, :shares, :account_transfers, :reporting, :search, :client_collaterals, :collateral_management, :credit_bureau, :glim, :gsim, :external_asset_owners, :working_capital_loan_products, :working_capital_loans, :entity_datatable_checks, :entity_field_configuration, :cash_management
 
     def initialize(**options)
       @configuration = Configuration.new(Fineract.config.to_h.merge(options))
@@ -43,6 +43,7 @@ module Fineract
       @interest_rate_charts = InterestRateCharts.new(self)
       @entity_datatable_checks = EntityDatatableChecks.new(self)
       @entity_field_configuration = EntityFieldConfiguration.new(self)
+      @cash_management = CashManagement.new(self)
     end
 
     alias security security_administration
@@ -51,6 +52,8 @@ module Fineract
     alias fixed_deposit fixed_deposits
     alias recurring_deposit recurring_deposits
     alias entity_datatable entity_datatable_checks
+    alias tellers cash_management
+    alias cashiers cash_management
     %i[users roles permissions password_preferences two_factor].each do |name|
       define_method(name) { security_administration.public_send(name) }
     end
