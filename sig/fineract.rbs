@@ -51,6 +51,7 @@ module Fineract
     attr_reader organization: Organization
     attr_reader fixed_deposits: TermDeposits
     attr_reader recurring_deposits: TermDeposits
+    attr_reader savings: Savings
     attr_reader clients: Clients
     attr_reader groups: Groups
     attr_reader centers: Centers
@@ -196,6 +197,7 @@ module Fineract
   class Loans < Resource; end
   class LoanProducts < Resource; end
   class TermDeposits < Resource; end
+  class Savings < Resource; end
   class Accounting < Resource; end
   class Shares < Resource; end
   class AccountTransfers < Resource; end

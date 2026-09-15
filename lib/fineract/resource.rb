@@ -31,8 +31,9 @@ module Fineract
     rescue ValidationError => e
       Failure.new(e)
     end
-    def validate_contract(contract, attributes)
-      result = contract.new.call(attributes)
+    def validate_contract(contract, attributes, method = nil)
+      result = method ? contract.public_send(method, attributes) : contract.new.call(attributes)
+      return result unless result.respond_to?(:success?)
       raise ValidationError, result.errors.to_h.inspect unless result.success?
     end
   end

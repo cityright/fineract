@@ -17,6 +17,11 @@ report = {
   "summary" => { "declared_operations" => operations.length, "conformant_operations" => operations.length, "coverage_percent" => 100.0 },
   "operations" => operations,
   "resource_methods" => {
+    "savings.products" => %w[retrieveAllSavingsProducts createSavingsProduct retrieveTemplateSavingsProduct retrieveOneSavingsProduct updateSavingsProduct deleteSavingsProduct],
+    "savings.accounts" => %w[retrieveAllSavingsAccounts submitSavingsApplication retrieveSavingsAccountTemplate retrieveSavingsAccount deleteSavingsAccount handleCommandsSavingsAccount updateSavingsAccount],
+    "savings.transactions" => %w[searchSavingsAccountTransactions createSavingsAccountTransaction retrieveTemplateSavingsAccountTransaction retrieveOneSavingsAccountTransaction adjustSavingsAccountTransaction advancedQuerySavingsAccountTransactions],
+    "savings.charges" => %w[retrieveAllSavingsAccountCharges createSavingsAccountCharge retrieveTemplateSavingsAccountCharge retrieveOneSavingsAccountCharge updateSavingsAccountCharge deleteSavingsAccountCharge handleCommandsSavingsAccountCharge],
+    "savings.standing_instructions" => %w[retrieveAllStandingInstructions createStandingInstruction retrieveTemplateStandingInstruction retrieveOneStandingInstruction updateStandingInstruction retrieveAllStandingInstructionHistory],
     "loans.collaterals" => %w[retrieveCollateralDetails createCollateral newCollateralTemplate deleteCollateral retrieveCollateralDetails_1 updateCollateral],
     "loans.guarantors" => %w[retrieveGuarantorDetails createGuarantor accountsTemplate getGuarantorTemplate newGuarantorTemplate postGuarantorTemplate deleteGuarantor retrieveGuarantorDetails_1 updateGuarantor],
     "loans.post_dated_checks" => %w[getPostDatedChecks getPostDatedCheck deletePostDatedCheck updatePostDatedChecks],

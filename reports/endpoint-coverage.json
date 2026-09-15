@@ -5799,6 +5799,48 @@
     }
   ],
   "resource_methods": {
+    "savings.products": [
+      "retrieveAllSavingsProducts",
+      "createSavingsProduct",
+      "retrieveTemplateSavingsProduct",
+      "retrieveOneSavingsProduct",
+      "updateSavingsProduct",
+      "deleteSavingsProduct"
+    ],
+    "savings.accounts": [
+      "retrieveAllSavingsAccounts",
+      "submitSavingsApplication",
+      "retrieveSavingsAccountTemplate",
+      "retrieveSavingsAccount",
+      "deleteSavingsAccount",
+      "handleCommandsSavingsAccount",
+      "updateSavingsAccount"
+    ],
+    "savings.transactions": [
+      "searchSavingsAccountTransactions",
+      "createSavingsAccountTransaction",
+      "retrieveTemplateSavingsAccountTransaction",
+      "retrieveOneSavingsAccountTransaction",
+      "adjustSavingsAccountTransaction",
+      "advancedQuerySavingsAccountTransactions"
+    ],
+    "savings.charges": [
+      "retrieveAllSavingsAccountCharges",
+      "createSavingsAccountCharge",
+      "retrieveTemplateSavingsAccountCharge",
+      "retrieveOneSavingsAccountCharge",
+      "updateSavingsAccountCharge",
+      "deleteSavingsAccountCharge",
+      "handleCommandsSavingsAccountCharge"
+    ],
+    "savings.standing_instructions": [
+      "retrieveAllStandingInstructions",
+      "createStandingInstruction",
+      "retrieveTemplateStandingInstruction",
+      "retrieveOneStandingInstruction",
+      "updateStandingInstruction",
+      "retrieveAllStandingInstructionHistory"
+    ],
     "loans.collaterals": [
       "retrieveCollateralDetails",
       "createCollateral",
