@@ -21,27 +21,19 @@ Gem::Specification.new do |spec|
   spec.metadata["bug_tracker_uri"] = "https://github.com/cityright/fineract/issues"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir["lib/**/*", "sig/**/*", "specifications/*.json", "CHANGELOG.md", "CODE_OF_CONDUCT.md",
-        "LICENSE.txt", "README.md"].select { |path| File.file?(path) }
+    Dir["lib/**/*", "sig/**/*", "reports/endpoint-coverage.json", "specifications/*.json",
+        "specifications/*.metadata.yml", "specifications/*.sha256", "CHANGELOG.md",
+        "CODE_OF_CONDUCT.md", "LICENSE.txt", "README.md"].select { |path| File.file?(path) }
   end
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_dependency "dry-configurable", "~> 1.0"
-  spec.add_dependency "dry-container", "~> 0.11"
   spec.add_dependency "dry-monads", "~> 1.6"
   spec.add_dependency "dry-struct", "~> 1.6"
-  spec.add_dependency "dry-types", "~> 1.7"
   spec.add_dependency "dry-validation", "~> 1.10"
   spec.add_dependency "faraday", "~> 2.0"
-  spec.add_dependency "faraday-retry", "~> 2.0"
 
-  spec.add_development_dependency "guard-minitest"
   spec.add_development_dependency "minitest", "~> 5.0"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "simplecov"
-
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
 end

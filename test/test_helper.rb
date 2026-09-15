@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "simplecov"
-SimpleCov.start { skip "/test/" }
-
 require "bundler/setup"
 require "minitest/autorun"
 require "fineract"

@@ -16,7 +16,7 @@ RuboCop::RakeTask.new(:lint)
 namespace :generated do
   desc "Fail when generated quality reports are stale"
   task :check do
-    sh Gem.ruby, "bin/endpoint-coverage", "--check"
+    sh Gem.ruby, "bin/endpoint-coverage-catalog", "--check"
   end
 end
 
@@ -24,12 +24,12 @@ namespace :endpoints do
   desc "Check that every endpoint declaration conforms to the endpoint inventory"
   task :conformance do
     ruby "-Itest", "test/endpoint_conformance_test.rb"
-    sh Gem.ruby, "bin/endpoint-coverage", "--check"
+    sh Gem.ruby, "bin/endpoint-coverage-catalog", "--check"
   end
 
   desc "Regenerate the endpoint coverage report"
   task :report do
-    sh Gem.ruby, "bin/endpoint-coverage"
+    sh Gem.ruby, "bin/endpoint-coverage-catalog"
   end
 end
 

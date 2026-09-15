@@ -5969,52 +5969,6 @@
       "retrieveAllJournalsForTeller",
       "retrieveAllTransactionsForTeller",
       "retrieveOneTransactionForTeller"
-    ],
-    "templates": [
-      "retrieveAllTemplates",
-      "createTemplate",
-      "retrieveTemplateDetails",
-      "retrieveOneTemplate",
-      "retrieveTemplateById",
-      "saveTemplate",
-      "mergeTemplate",
-      "deleteTemplate"
-    ],
-    "documents": [
-      "retrieveAllDocuments",
-      "createDocument",
-      "getDocument",
-      "updateDocument",
-      "downloadFile",
-      "deleteDocument"
-    ],
-    "surveys": [
-      "fetchAllSurveys",
-      "createSurvey",
-      "findSurvey",
-      "editSurvey",
-      "activateOrDeactivateSurvey",
-      "fetchLookupTables",
-      "createLookupTable",
-      "findLookupTable",
-      "findByClient",
-      "findBySurvey",
-      "findBySurveyAndClient",
-      "createScorecard"
-    ],
-    "surveys.legacy": [
-      "retrieveAllSurveys",
-      "retrieveOneSurvey",
-      "register",
-      "createSurveyEntry",
-      "getClientSurveyOverview",
-      "getSurveyEntry",
-      "deleteDatatableEntries_1"
-    ],
-    "self_service": [
-      "fetchAuthenticatedUserData",
-      "getAllNotifications",
-      "updateNotificationReadStatus"
     ]
   }
 }
