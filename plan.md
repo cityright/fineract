@@ -177,7 +177,7 @@ Each phase adds idiomatic resource methods, contracts, documentation, unit tests
 
 ## Testing and Acceptance Criteria
 
-- Replace RSpec with Minitest to follow Lipwa's project style.
+- Use Minitest to follow Lipwa's project style.
 - Test configuration isolation so multiple clients can safely target different tenants or servers in the same process.
 - Use Faraday's test adapter for transport, authentication, header, encoding, timeout, retry, logging-redaction, upload, and download tests.
 - Contract tests must prove invalid input produces `Failure` without making a network call.
