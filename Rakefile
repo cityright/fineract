@@ -14,8 +14,9 @@ require "rubocop/rake_task"
 RuboCop::RakeTask.new(:lint)
 
 namespace :generated do
-  desc "Fail when generated quality reports are stale"
+  desc "Fail when generated endpoint definitions and quality reports are stale"
   task :check do
+    sh Gem.ruby, "bin/generate-endpoint-catalog", "--check"
     sh Gem.ruby, "bin/endpoint-coverage-catalog", "--check"
   end
 end

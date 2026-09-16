@@ -1,82 +1,57 @@
 # frozen_string_literal: true
 
-require "json"
-
 module Fineract
+  # Immutable, pinned OpenAPI operation definitions. The source document is not
+  # read at runtime; regenerate this catalog when upgrading the pinned spec.
   class OperationCatalog
-    HTTP_METHODS = %w[get post put patch delete].freeze
-    SPECIFICATION = File.expand_path("../../specifications/fineract-1.15.0.json", __dir__)
-
     Operation = Data.define(
-      :name, :method, :path, :parameters, :request_media_types, :response_media_types,
-      :request_required, :request_schema, :deprecated
+      :name, :method, :path, :tags, :parameters, :request_media_types,
+      :request_schemas, :response_media_types, :security, :request_required,
+      :deprecated
     ) do
       def path_parameters = parameters.select { |parameter| parameter["in"] == "path" }
       def query_parameters = parameters.select { |parameter| parameter["in"] == "query" }
       def header_parameters = parameters.select { |parameter| parameter["in"] == "header" }
+
+      def request_schema(media_type = request_media_types.first) = request_schemas[media_type]
     end
 
     def self.default = (@default ||= new)
 
-    def initialize(document = JSON.parse(File.read(SPECIFICATION)))
-      @operations = {}
-      document.fetch("paths").each do |path, path_item|
-        path_item_params = path_item.fetch("parameters", [])
-        path_item.each do |method, definition|
-          next unless HTTP_METHODS.include?(method)
-
-          definition = dereference(definition, document)
-          parameters = (path_item_params + definition.fetch("parameters", [])).map do |parameter|
-            dereference(parameter, document)
-          end
-          name = definition.fetch("operationId")
-          operation = Operation.new(
-            name, method.to_sym, normalize_path(path), parameters,
-            definition.dig("requestBody", "content")&.keys || [],
-            response_media_types(definition.fetch("responses")),
-            definition.dig("requestBody", "required") == true,
-            dereference(definition.dig("requestBody", "content")&.values&.first&.fetch("schema", nil), document),
-            definition["deprecated"] == true
-          )
-          @operations[name] = operation
-          @operations[underscore(name)] ||= operation
-        end
-      end
-      @operations.freeze
+    def initialize(definitions = GeneratedEndpointDefinitions::RAW)
+      entries = definitions.map { |definition| operation_from(definition) }
+      @operations = entries.to_h { |operation| [operation.name, operation] }.freeze
+      @aliases = entries.to_h { |operation| [underscore(operation.name), operation] }.freeze
+      raise ArgumentError, "generated endpoint names are not unique" unless @operations.length == entries.length
     end
 
-    def fetch(name) = @operations.fetch(name.to_s) { raise KeyError, name.to_s }
-    def include?(name) = @operations.key?(name.to_s)
-    def each(&block) = @operations.values.uniq(&:name).each(&block)
-    def size = each.count
+    def fetch(name) = @operations.fetch(name.to_s) { @aliases.fetch(name.to_s) { raise KeyError, name.to_s } }
+    def include?(name) = @operations.key?(name.to_s) || @aliases.key?(name.to_s)
+    def each(&block) = @operations.values.sort_by(&:name).each(&block)
+    def size = @operations.size
 
     private
 
-    def response_media_types(responses)
-      response = responses.find { |status, _| status.to_s.start_with?("2") }&.last || responses["default"] || {}
-      response.fetch("content", {}).keys
-    end
-
-    def normalize_path(path)
-      normalized = path.sub(%r{\A/v1(?=/|\z)}, "")
-      normalized.empty? ? "/" : normalized
+    def operation_from(definition)
+      Operation.new(
+        definition.fetch("operation"), definition.fetch("method").downcase.to_sym,
+        definition.fetch("path"), definition.fetch("tags"), definition.fetch("parameters"),
+        definition.fetch("request_media_types"), definition.fetch("request_schemas"),
+        definition.fetch("response_media_types"), definition.fetch("security"),
+        definition.fetch("request_required"), definition.fetch("deprecated")
+      ).freeze
     end
 
     def underscore(name)
-      name.to_s.gsub(/([A-Z]+)([A-Z][a-z])/, '\\1_\\2').gsub(/([a-z\d])([A-Z])/, '\\1_\\2').downcase
-    end
-
-    def dereference(value, document)
-      return value unless value.is_a?(Hash) && value["$ref"]
-
-      value["$ref"].split("/").drop(1).inject(document) { |current, key| current.fetch(key) }
+      name.gsub(/([A-Z]+)([A-Z][a-z])/, "\\1_\\2").gsub(/([a-z\d])([A-Z])/, "\\1_\\2").downcase
     end
   end
 
   Catalog = OperationCatalog
   Endpoint = OperationCatalog::Operation
 
-  # The explicit low-level API surface generated from the pinned document.
+  # Every generated definition is registered exactly once. The underscored
+  # alias is only a lookup convenience and does not create another endpoint.
   class OperationRegistry
     Entry = Data.define(:name, :operation) do
       def method = operation.method
@@ -103,21 +78,19 @@ module Fineract
       catalog.each { |operation| register(operation) }
       @entries.freeze
       @aliases.freeze
+      freeze
     end
 
     def register(operation)
       name = operation.name.to_s
       raise ArgumentError, "operation already registered: #{name}" if @entries.key?(name)
 
-      entry = Entry.new(name, operation)
+      entry = Entry.new(name, operation).freeze
       @entries[name] = entry
       @aliases[underscore(name)] = entry
     end
 
-    def fetch(name)
-      @entries.fetch(name.to_s) { @aliases.fetch(name.to_s) { raise KeyError, name.to_s } }
-    end
-
+    def fetch(name) = @entries.fetch(name.to_s) { @aliases.fetch(name.to_s) { raise KeyError, name.to_s } }
     def include?(name) = @entries.key?(name.to_s) || @aliases.key?(name.to_s)
     def each(&block) = @entries.values.sort_by(&:name).each(&block)
     def size = @entries.size

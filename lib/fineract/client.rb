@@ -76,7 +76,7 @@ module Fineract
       operation = OperationRegistry.default.fetch(operation_name).operation
       path = path_params unless path_params.nil?
       headers = header unless header.nil?
-      validate_inputs!(operation, path, query, headers, body)
+      validate_inputs!(operation, path, query, headers, body, request_type)
       request_headers = headers.dup
       request_headers["Accept"] ||= operation.response_media_types.first if operation.response_media_types.any?
       transport.request(operation.method, operation.path, path_params: path, query: query, headers: request_headers,
@@ -95,7 +95,7 @@ module Fineract
 
     private
 
-    def validate_inputs!(operation, path, query, headers, body)
+    def validate_inputs!(operation, path, query, headers, body, request_type = nil)
       validate_hash!(path, "path")
       validate_hash!(query, "query")
       validate_hash!(headers, "headers")
@@ -108,10 +108,10 @@ module Fineract
               "missing required request body for #{operation.name}"
       end
 
-      return unless body && operation.request_schema && operation.name != "transaction"
+      schema = operation.request_schema(request_type || operation.request_media_types.first)
+      return unless body && schema && operation.name != "transaction"
 
-      validate_schema!(operation.request_schema,
-                       body)
+      validate_schema!(schema, body)
     end
 
     def validate_hash!(value, name)
