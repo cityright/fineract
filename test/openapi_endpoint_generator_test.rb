@@ -4,6 +4,27 @@ require "test_helper"
 require "fineract/openapi_endpoint_generator"
 
 class OpenapiEndpointGeneratorTest < Minitest::Test
+  RecordingClient = Struct.new(:calls) do
+    def call(operation, **options)
+      calls << [operation, options]
+    end
+  end
+
+  def test_generated_operations_warn_for_each_deprecated_operation
+    operations = Fineract::GeneratedOperations.new(RecordingClient.new([]))
+    deprecated = Fineract::OperationCatalog.default.each.select(&:deprecated)
+
+    _stdout, stderr = capture_io do
+      deprecated.each { |operation| operations.public_send(operation.name) }
+    end
+
+    assert_equal 6, deprecated.length
+    deprecated.each do |operation|
+      assert_includes stderr, "Fineract::GeneratedOperations##{operation.name}"
+      assert_includes stderr, "#{operation.method.to_s.upcase} #{operation.path}"
+    end
+  end
+
   def test_stable_generation_preserves_commands_multipart_security_and_deprecation
     operations = generator.operations
     assert_equal operations, generator.operations

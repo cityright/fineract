@@ -8,6 +8,7 @@
     "resource_covered_operations": 965,
     "legacy_only_endpoints": 3,
     "deprecated_or_unsupported_operations": 0,
+    "spec_deprecated_operations": 6,
     "registry_gaps": 0
   },
   "operations": [
@@ -56440,5 +56441,119 @@
       "reason": "Flexirest implementation base class; it was never a Fineract endpoint."
     }
   ],
-  "deprecated_unsupported_operations": []
+  "deprecated_unsupported_operations": [],
+  "spec_deprecated_operations": [
+    {
+      "operation": "createImage_1",
+      "method": "POST",
+      "path": "/{entityType}/{entityId}/images",
+      "path_parameters": [
+        "entityId",
+        "entityType"
+      ],
+      "query_parameters": [],
+      "header_parameters": [
+        "Content-Length"
+      ],
+      "request_media_types": [
+        "multipart/form-data"
+      ],
+      "response_media_types": [],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    },
+    {
+      "operation": "deleteImage",
+      "method": "DELETE",
+      "path": "/{entityType}/{entityId}/images",
+      "path_parameters": [
+        "entityId",
+        "entityType"
+      ],
+      "query_parameters": [],
+      "header_parameters": [],
+      "request_media_types": [],
+      "response_media_types": [
+        "*/*"
+      ],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    },
+    {
+      "operation": "fetchLoanCapitalizedIncomeData",
+      "method": "GET",
+      "path": "/loans/{loanId}/deferredincome",
+      "path_parameters": [
+        "loanId"
+      ],
+      "query_parameters": [],
+      "header_parameters": [],
+      "request_media_types": [],
+      "response_media_types": [
+        "application/json"
+      ],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    },
+    {
+      "operation": "fetchLoanCapitalizedIncomeDataByExternalId",
+      "method": "GET",
+      "path": "/loans/external-id/{loanExternalId}/deferredincome",
+      "path_parameters": [
+        "loanExternalId"
+      ],
+      "query_parameters": [],
+      "header_parameters": [],
+      "request_media_types": [],
+      "response_media_types": [
+        "application/json"
+      ],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    },
+    {
+      "operation": "retrieveImage",
+      "method": "GET",
+      "path": "/{entityType}/{entityId}/images",
+      "path_parameters": [
+        "entityId",
+        "entityType"
+      ],
+      "query_parameters": [
+        "maxHeight",
+        "maxWidth",
+        "output"
+      ],
+      "header_parameters": [
+        "Accept"
+      ],
+      "request_media_types": [],
+      "response_media_types": [
+        "*/*"
+      ],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    },
+    {
+      "operation": "updateImage_1",
+      "method": "PUT",
+      "path": "/{entityType}/{entityId}/images",
+      "path_parameters": [
+        "entityId",
+        "entityType"
+      ],
+      "query_parameters": [],
+      "header_parameters": [
+        "Content-Length"
+      ],
+      "request_media_types": [
+        "multipart/form-data"
+      ],
+      "response_media_types": [
+        "*/*"
+      ],
+      "deprecated": true,
+      "source": "specifications/fineract-1.15.0.json"
+    }
+  ]
 }

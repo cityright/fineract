@@ -3,6 +3,13 @@
 require "test_helper"
 
 class ConfigurationTest < Minitest::Test
+  def test_exposes_the_expected_configuration_settings
+    assert_equal %i[
+      base_url api_version tenant_id username password basic_key bearer_token authentication
+      timeout open_timeout logger adapter retry_options verify_ssl user_agent locale date_format
+    ], Fineract.config.to_h.keys
+  end
+
   def test_normalizes_configuration_and_preserves_defaults
     Fineract.configure do |config|
       config.base_url = " https://example.test/api/// "

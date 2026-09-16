@@ -30,6 +30,15 @@ class EndpointConformanceTest < Minitest::Test
     end
   end
 
+  def test_reports_spec_deprecated_operations_separately_from_coverage
+    report = JSON.parse(File.read(REPORT))
+    deprecated = report.fetch("catalog_operations").select { |operation| operation.fetch("deprecated") }
+
+    assert_equal deprecated, report.fetch("spec_deprecated_operations")
+    assert_equal deprecated.length, report.fetch("summary").fetch("spec_deprecated_operations")
+    assert_equal 6, deprecated.length
+  end
+
   def test_generated_operations_facade_exposes_every_catalog_operation
     client = Fineract.client(adapter: [:test, Faraday::Adapter::Test::Stubs.new])
     operations = JSON.parse(File.read(REPORT)).fetch("catalog_operations")

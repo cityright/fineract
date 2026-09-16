@@ -10,6 +10,23 @@ client.loans.retrieve(loan_id)
 
 The old classes are not compatibility aliases. `Fineract::Api::*` wrappers are intentionally unavailable in 1.0; update call sites to the resource methods below.
 
+## Deprecated operations
+
+The pinned Fineract 1.15.0 OpenAPI document marks the following operations as
+deprecated. The `client.operations` compatibility facade emits a Ruby
+deprecation warning when these operations are called. The pinned document does
+not name replacements; use the server version's current API documentation
+before migrating these calls.
+
+| Generated operation | Endpoint | Replacement or rationale |
+| --- | --- | --- |
+| `createImage_1` | `POST /{entityType}/{entityId}/images` | No replacement is specified by the pinned document. |
+| `deleteImage` | `DELETE /{entityType}/{entityId}/images` | No replacement is specified by the pinned document. |
+| `retrieveImage` | `GET /{entityType}/{entityId}/images` | No replacement is specified by the pinned document. |
+| `updateImage_1` | `PUT /{entityType}/{entityId}/images` | No replacement is specified by the pinned document. |
+| `fetchLoanCapitalizedIncomeData` | `GET /loans/{loanId}/deferredincome` | No replacement is specified by the pinned document. |
+| `fetchLoanCapitalizedIncomeDataByExternalId` | `GET /loans/external-id/{loanExternalId}/deferredincome` | No replacement is specified by the pinned document. |
+
 
 The old Flexirest classes map to the phase-one resource surface below. All
 resource methods use the pinned OpenAPI operation catalog, so the HTTP verb,

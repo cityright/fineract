@@ -8,6 +8,8 @@ module Fineract
   class GeneratedOperations < Resource
     OperationCatalog.default.each do |operation|
       define_method(operation.name) do |path: {}, query: {}, headers: {}, body: nil, request_type: nil, response_type: nil, idempotent: nil, idempotency_key: nil|
+        Kernel.warn("DEPRECATION WARNING: Fineract::GeneratedOperations##{operation.name} (#{operation.method.to_s.upcase} #{operation.path}) is deprecated by the pinned Fineract 1.15.0 OpenAPI specification.") if operation.deprecated
+
         client.call(operation.name, path: path, query: query, headers: headers, body: body,
                                     request_type: request_type, response_type: response_type,
                                     idempotent: idempotent, idempotency_key: idempotency_key)

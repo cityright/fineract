@@ -70,8 +70,6 @@ module Fineract
   setting :password, default: nil
   setting :basic_key, default: nil
   setting :bearer_token, default: nil
-  setting :basic_key, default: nil
-  setting :bearer_token, default: nil
   setting :authentication, default: nil
   setting :timeout, default: 10
   setting :open_timeout, default: 5
