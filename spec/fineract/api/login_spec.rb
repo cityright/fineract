@@ -42,12 +42,12 @@ RSpec.describe Fineract::Api::Login do
       end
 
       it "raises a HTTP server exception" do
-        expect do
+        expect {
           described_class.create(
             username: ENV["FINERACT_API_USERNAME"],
             password: ENV["FINERACT_API_PASSWORD"]
           )
-        end.to raise_exception(Flexirest::HTTPServerException)
+        }.to raise_exception(Flexirest::HTTPServerException)
       end
     end
   end
