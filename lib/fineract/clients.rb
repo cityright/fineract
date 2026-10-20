@@ -79,10 +79,6 @@ module Fineract
 
     def delete(client_id) = safe_call { call(:delete_client, path: { clientId: id!(client_id, "client_id") }) }
 
-    def accounts(client_id)
-      safe_call { call(:retrieve_all_client_accounts, path: { clientId: id!(client_id, "client_id") }) }
-    end
-
     def field_configuration(entity) = call(:get_addresses, path: { entity: entity.to_s })
     def activate(client_id, **attributes) = command(client_id, "activate", attributes)
     def close(client_id, **attributes) = command(client_id, "close", attributes)
@@ -105,13 +101,6 @@ module Fineract
 
     def propose_and_accept_transfer(client_id, **attributes)
       command(client_id, "proposeAndAcceptTransfer", attributes)
-    end
-
-    def initialize(client)
-      super
-      @addresses = Addresses.new(client)
-      @lifecycle = Lifecycle.new(client)
-      @transfers = Transfers.new(client)
     end
 
     private

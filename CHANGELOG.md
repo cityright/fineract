@@ -2,6 +2,17 @@
 
 Changes intended for the next release will be listed here.
 
+- Adds `bin/smoke-test` (`rake smoke`) and a CI job that builds, installs, and
+  loads the gem from a temporary gem home.
+- Removes pre-1.0 `Fineract::Api::*` endpoint classes and RSpec files that were
+  reintroduced after the 1.0 rewrite; they were not loadable and were packaged
+  in the gem.
+
+### Notable changes
+
+- Documents the runtime dependency tree: Zeitwerk is a transitive dependency of
+  the dry-rb gems and is not used by this gem for autoloading.
+
 ## [1.0.0] - 2026-09-15
 
 The first stable, resource-oriented release.

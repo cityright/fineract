@@ -45,3 +45,15 @@ jobs:
           name: endpoint-coverage
           path: reports/endpoint-coverage.json
           if-no-files-found: error
+
+  smoke:
+    runs-on: ubuntu-latest
+    name: Gem build and install smoke test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+          bundler-cache: true
+      - name: Build, install, and load the gem
+        run: bundle exec rake smoke
