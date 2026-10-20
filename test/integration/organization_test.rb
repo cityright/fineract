@@ -2,7 +2,7 @@
 
 require_relative "test_helper"
 
-class OrganizationIntegrationTest < Minitest::Test
+class OrganizationIntegrationTest < IntegrationTest
   def test_reference_data_is_readable
     assert INTEGRATION_CLIENT.organization.staff.list.success?
     assert INTEGRATION_CLIENT.organization.currencies.list.success?

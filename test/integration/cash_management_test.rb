@@ -2,7 +2,7 @@
 
 require_relative "test_helper"
 
-class CashManagementIntegrationTest < Minitest::Test
+class CashManagementIntegrationTest < IntegrationTest
   def test_tellers_are_readable
     result = INTEGRATION_CLIENT.cash_management.list
     assert result.success?, result.failure.inspect
