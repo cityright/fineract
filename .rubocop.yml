@@ -1,3 +1,8 @@
+# Keep RuboCop's default excludes (vendor/**/*, etc.) so CI's vendor/bundle is skipped.
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   NewCops: disable
   SuggestExtensions: false
