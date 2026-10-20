@@ -8,7 +8,7 @@ module Fineract
       #
       #
       class WithdrawTransfer < AuthorisedBase
-        post :create, "/clients/:id?command=withdrawTransfer", rubify_names: true
+        post :withdraw, "/clients/:id?command=withdrawTransfer", rubify_names: true
       end
     end
   end

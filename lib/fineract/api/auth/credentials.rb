@@ -40,7 +40,7 @@ module Fineract
           issued_at = fineract_api_auth[:issued_at]
           expiry = fineract_api_auth[:expires_in].to_i
 
-          return true unless issued_at && expiry
+          return false unless issued_at && expiry.positive?
 
           current_time = Time.now.utc.to_i
           (issued_at + expiry) <= current_time

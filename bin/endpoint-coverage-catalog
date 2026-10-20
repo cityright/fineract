@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# rubocop:disable all
+require "json"
+require_relative "../lib/fineract"
+ROOT = File.expand_path("..", __dir__)
+REPORT = File.join(ROOT, "reports/endpoint-coverage.json")
+BASELINE = File.join(ROOT, "specifications/fineract-1.15.0.operations.json")
+LEGACY_ONLY = [{ "name" => "Fineract::Api::Login.create", "classification" => "replaced", "replacement" => "Fineract.configure / configured authentication strategy", "reason" => "Authentication configuration is client setup, not a resource endpoint." }, { "name" => "Fineract::Api::Base", "classification" => "intentionally_unavailable", "reason" => "Flexirest implementation base class; it was never a Fineract endpoint." }, { "name" => "Fineract::Api::AuthorisedBase", "classification" => "intentionally_unavailable", "reason" => "Flexirest implementation base class; it was never a Fineract endpoint." }].freeze
+
+def record(o)
+  { "operation" => o.name, "method" => o.method.to_s.upcase, "path" => o.path, "path_parameters" => o.path_parameters.map { |p| p.fetch("name") }.sort, "query_parameters" => o.query_parameters.map { |p| p.fetch("name") }.sort, "header_parameters" => o.header_parameters.map { |p| p.fetch("name") }.sort, "request_media_types" => o.request_media_types.sort, "response_media_types" => o.response_media_types.sort, "deprecated" => o.deprecated, "source" => "specifications/fineract-1.15.0.json" }
+end
+
+def bindings(catalog)
+  found = []
+  Dir.glob(File.join(ROOT, "lib/fineract/**/*.rb")).sort.each do |file|
+    method = nil
+    File.foreach(file).with_index(1) do |line, line_number|
+      method = Regexp.last_match(1) if line =~ /^\s*def\s+([a-zA-Z_]\w*[!?]?)/
+      line.scan(/\bcall\(\s*(?::([A-Za-z_]\w*)|["\x27]([A-Za-z_]\w*)["\x27])/) do |symbol, string|
+        begin; operation = catalog.fetch(symbol || string); rescue KeyError; next; end
+        found << { "resource_method" => "#{file.delete_prefix("#{ROOT}/lib/").delete_suffix(".rb")}##{method || "call"}", "operation" => operation.name, "source_line" => line_number }
+      end
+    end
+  end
+  found.uniq.sort_by { |b| [b.fetch("operation"), b.fetch("resource_method")] }
+end
+catalog = Fineract::OperationCatalog.default
+registry = Fineract::OperationRegistry.default
+catalog_operations = catalog.each.map { |o| record(o) }.sort_by { |o| o.fetch("operation") }
+registry_operations = registry.each.map(&:signature).sort_by { |o| o.fetch("operation") }
+signatures = catalog_operations.map { |o| o.reject { |key, _| key == "source" } }
+abort "registry gap: catalog and registry signatures differ" unless signatures == registry_operations
+resource_methods = bindings(catalog)
+if Fineract.const_defined?(:GeneratedOperations)
+  resource_methods.concat(catalog.each.map do |operation|
+    { "resource_method" => "fineract/generated_operations##{operation.name}", "operation" => operation.name,
+      "source_line" => nil }
+  end)
+end
+resource_methods.uniq!
+implemented = resource_methods.map { |b| b.fetch("operation") }.uniq
+classification = catalog.each.to_h { |o| [o.name, implemented.include?(o.name) ? "implemented" : o.deprecated ? "deprecated" : "intentionally_unavailable"] }
+unsupported = catalog_operations.filter_map { |o| c = classification.fetch(o.fetch("operation")); next if c == "implemented"; o.slice("operation", "method", "path").merge("classification" => c, "reason" => c == "deprecated" ? "Deprecated by pinned OpenAPI document." : "No idiomatic resource method; use client.call(operation, ...).") }
+spec_deprecated = catalog_operations.select { |operation| operation.fetch("deprecated") }
+report = { "schema_version" => 3, "compatibility_target" => "Apache Fineract 1.15.0", "summary" => { "catalog_operations" => catalog_operations.length, "registry_operations" => registry_operations.length, "resource_method_bindings" => resource_methods.length, "resource_covered_operations" => implemented.length, "legacy_only_endpoints" => LEGACY_ONLY.length, "deprecated_or_unsupported_operations" => unsupported.length, "spec_deprecated_operations" => spec_deprecated.length, "registry_gaps" => 0 }, "operations" => catalog_operations, "catalog_operations" => catalog_operations, "registry_operations" => registry_operations, "resource_methods" => resource_methods, "legacy_only_endpoints" => LEGACY_ONLY, "deprecated_unsupported_operations" => unsupported, "spec_deprecated_operations" => spec_deprecated }
+rendered = "#{JSON.pretty_generate(report)}\n"
+locked = "#{JSON.pretty_generate(signatures)}\n"
+case ARGV
+when ["--update-catalog"]
+  File.write(BASELINE, locked); File.write(REPORT, rendered); puts "Updated locked catalog and report (#{catalog_operations.length} operations)"
+when ["--check"]
+  abort "locked OpenAPI signatures are missing; run bin/endpoint-coverage-catalog --update-catalog" unless File.file?(BASELINE)
+  abort "OpenAPI operations disappeared or changed signature; review and run bin/endpoint-coverage-catalog --update-catalog" unless File.read(BASELINE) == locked
+  abort "reports/endpoint-coverage.json is stale; run bin/endpoint-coverage-catalog" unless File.file?(REPORT) && File.read(REPORT) == rendered
+  puts "Endpoint coverage is current (#{registry_operations.length}/#{catalog_operations.length} registered; #{implemented.length} resource-covered)"
+when []
+  File.write(REPORT, rendered); puts "Wrote reports/endpoint-coverage.json (#{catalog_operations.length} catalog operations)"
+else
+  abort "usage: bin/endpoint-coverage-catalog [--check|--update-catalog]"
+end

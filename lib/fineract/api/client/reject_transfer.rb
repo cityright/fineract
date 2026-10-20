@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
 module Fineract
   module Api
     module Client
@@ -9,7 +8,7 @@ module Fineract
       #
       #
       class RejectTransfer < AuthorisedBase
-        post :create, "/clients/:id?command=rejectTransfer", rubify_names: true
+        post :reject, "/clients/:id?command=rejectTransfer", rubify_names: true
       end
     end
   end

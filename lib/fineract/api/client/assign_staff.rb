@@ -8,7 +8,7 @@ module Fineract
       #
       #
       class AssignStaff < AuthorisedBase
-        post :create, "/clients/:id?command=assignStaff", rubify_names: true
+        post :assign, "/clients/:id?command=assignStaff", rubify_names: true
       end
     end
   end

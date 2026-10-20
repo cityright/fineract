@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
 module Fineract
   module Api
     module Client
@@ -9,7 +8,7 @@ module Fineract
       #
       #
       class ProposeTransfer < AuthorisedBase
-        post :create, "/clients/:id?command=proposeTransfer", rubify_names: true
+        post :propose, "/clients/:id?command=proposeTransfer", rubify_names: true
       end
     end
   end

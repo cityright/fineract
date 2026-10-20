@@ -47,8 +47,6 @@ RSpec.configure do |config|
     Fineract::Api::Auth::BaseConfiguration.call(
       username: "Some Username",
       password: "Some Password",
-      client_id: "Some Client ID",
-      client_secret: "Some Client Secret",
       tenant_id: "Some Tenant ID"
     )
   end

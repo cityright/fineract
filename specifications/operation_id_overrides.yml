@@ -1,0 +1,6 @@
+# Stable names for OpenAPI operations whose upstream operationId is missing,
+# duplicated, or not suitable for a Ruby method. Keys are "VERB /v1/path".
+#
+# Keep this file even when it is empty: it is the reviewed, versioned policy
+# surface for resolving future upstream irregularities.
+operations: {}

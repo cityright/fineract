@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Layout/LineLength
 module Fineract
   module Api
     module Client
@@ -19,7 +18,7 @@ module Fineract
         validates :active, presence: true
         validates :dateFormat, presence: true
         validates :locale, presence: true
-        validates :activationDate, presence: true
+        validates :activationDate, presence: true, if: -> { active == true }
       end
     end
   end

@@ -8,7 +8,7 @@ module Fineract
       #
       #
       class UnassignStaff < AuthorisedBase
-        post :create, "/clients/:id?command=unassignStaff", rubify_names: true
+        post :unassign, "/clients/:id?command=unassignStaff", rubify_names: true
       end
     end
   end

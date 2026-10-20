@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "digest"
+require "pathname"
+
+snapshot = Pathname(ARGV.fetch(0, "specifications/fineract-1.15.0.json"))
+checksum_file = Pathname("#{snapshot}.sha256")
+
+abort "missing snapshot: #{snapshot}" unless snapshot.file?
+abort "missing checksum: #{checksum_file}" unless checksum_file.file?
+
+expected = checksum_file.read.split.first
+actual = Digest::SHA256.file(snapshot).hexdigest
+abort "checksum mismatch for #{snapshot}: expected #{expected}, got #{actual}" unless expected == actual
+
+document = JSON.parse(snapshot.read)
+abort "snapshot is not OpenAPI 3" unless document["openapi"]&.start_with?("3.")
+abort "snapshot version is not Fineract 1.15.0" unless document.dig("info", "version") == "1.15.0"
+
+puts "verified #{snapshot} (SHA-256 #{actual})"
