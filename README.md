@@ -7,6 +7,24 @@ used from plain Ruby or any Ruby web framework.
 
 For applications upgrading from the pre-1.0 Flexirest API, see the [breaking-change migration guide](docs/legacy-resource-mapping.md).
 
+## Dependencies
+
+The gem has five runtime dependencies:
+
+- `dry-configurable` for gem-wide defaults.
+- `dry-struct` (with `dry-types`) for immutable configuration, responses, and errors.
+- `dry-validation` for request contracts.
+- `dry-monads` for `Success` and `Failure` results.
+- `faraday` for HTTP transport.
+
+The dry-rb gems were chosen because they give typed configuration, validated
+contracts, and explicit result objects without a framework. The 1.0 rewrite
+removed Zeitwerk as a direct dependency; the gem loads its files explicitly with
+`require_relative`. Zeitwerk is still installed as a transitive dependency of
+the dry-rb family (`dry-core` and friends), but this gem does not use it for
+autoloading. Retries and the endpoint registry are implemented in the gem, so
+`faraday-retry` and `dry-container` are not required.
+
 ## Installation
 
 Add the gem to your Gemfile:
@@ -96,6 +114,13 @@ Regenerate the checked-in endpoint coverage artifact after changing an endpoint:
 
 ```console
 $ bundle exec rake endpoints:report
+```
+
+Build the gem, install it into a temporary gem home, and load it from a clean
+process (no network calls to Fineract):
+
+```console
+$ bundle exec rake smoke
 ```
 
 ### Integration tests
