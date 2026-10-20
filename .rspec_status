@@ -1,0 +1,9 @@
+example_id                                           | status | run_time        |
+---------------------------------------------------- | ------ | --------------- |
+./spec/fineract/api/loans/create_loan_spec.rb[1:1:1] | passed | 0.06515 seconds |
+./spec/fineract/api/loans/create_loan_spec.rb[1:1:2] | passed | 0.00434 seconds |
+./spec/fineract/api/loans/get_loan_spec.rb[1:1:1]    | passed | 0.00468 seconds |
+./spec/fineract/api/loans/repay_loan_spec.rb[1:1:1]  | passed | 0.00521 seconds |
+./spec/fineract/api/login_spec.rb[1:1:1:1]           | passed | 0.00605 seconds |
+./spec/fineract/api/login_spec.rb[1:1:2:1]           | passed | 0.00524 seconds |
+./spec/fineract_spec.rb[1:1]                         | passed | 0.00104 seconds |
