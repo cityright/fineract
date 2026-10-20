@@ -2,7 +2,7 @@
 
 require_relative "test_helper"
 
-class EntityMetadataIntegrationTest < Minitest::Test
+class EntityMetadataIntegrationTest < IntegrationTest
   def test_entity_metadata_is_readable
     assert INTEGRATION_CLIENT.entity_datatable_checks.list.success?
     assert INTEGRATION_CLIENT.entity_datatable_checks.template.success?
