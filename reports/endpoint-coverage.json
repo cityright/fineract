@@ -4,7 +4,7 @@
   "summary": {
     "catalog_operations": 965,
     "registry_operations": 965,
-    "resource_method_bindings": 1464,
+    "resource_method_bindings": 1463,
     "resource_covered_operations": 965,
     "legacy_only_endpoints": 3,
     "deprecated_or_unsupported_operations": 0,
@@ -49845,7 +49845,7 @@
     {
       "resource_method": "fineract/clients#field_configuration",
       "operation": "getAddresses",
-      "source_line": 86
+      "source_line": 82
     },
     {
       "resource_method": "fineract/entity_metadata#retrieve",
@@ -50020,7 +50020,7 @@
     {
       "resource_method": "fineract/clients#command",
       "operation": "handleCommandClient",
-      "source_line": 126
+      "source_line": 115
     },
     {
       "resource_method": "fineract/centers#command",
@@ -50261,11 +50261,6 @@
       "resource_method": "fineract/client_subresources#list",
       "operation": "retrieveAllClientAccounts",
       "source_line": 18
-    },
-    {
-      "resource_method": "fineract/clients#accounts",
-      "operation": "retrieveAllClientAccounts",
-      "source_line": 83
     },
     {
       "resource_method": "fineract/clients#list",
