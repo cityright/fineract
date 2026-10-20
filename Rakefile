@@ -34,5 +34,10 @@ namespace :endpoints do
   end
 end
 
+desc "Build, install, and load the gem from a temporary gem home"
+task :smoke do
+  sh Gem.ruby, "bin/smoke-test"
+end
+
 desc "Run all local quality gates"
 task default: %i[test lint generated:check endpoints:conformance]

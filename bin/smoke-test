@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Builds the gem, installs it into a temporary gem home outside the repository,
+# and loads it from a clean process. Never contacts a Fineract server.
+
+require "bundler"
+require "tmpdir"
+
+root = File.expand_path("..", __dir__)
+require_relative "../lib/fineract/version"
+expected_version = Fineract::VERSION
+
+smoke = <<~RUBY
+  require "fineract"
+
+  abort "loaded from \#{$LOADED_FEATURES.grep(/fineract\\.rb\\z/).first}" unless $LOADED_FEATURES.any? { |path| path.start_with?(ENV.fetch("GEM_HOME")) && path.end_with?("/fineract.rb") }
+  abort "unexpected version \#{Fineract::VERSION}" unless Fineract::VERSION == "#{expected_version}"
+
+  client = Fineract.client(base_url: "https://fineract.invalid/fineract-provider/api/", tenant_id: "smoke")
+  configuration = client.configuration
+  abort "base_url was not normalized" unless configuration.base_url == "https://fineract.invalid/fineract-provider/api"
+  abort "tenant_id was not applied" unless configuration.tenant_id == "smoke"
+  abort "api_version default changed" unless configuration.api_version == "v1"
+  abort "TLS verification is not enabled by default" unless configuration.verify_ssl
+
+  puts "smoke test passed for fineract \#{Fineract::VERSION}"
+RUBY
+
+Dir.mktmpdir("fineract-smoke") do |dir|
+  gem_home = File.join(dir, "gems")
+  package = File.join(dir, "fineract-#{expected_version}.gem")
+
+  Bundler.with_unbundled_env do
+    Dir.chdir(root) do
+      system(Gem.ruby, "-S", "gem", "build", "fineract.gemspec", "--output", package, exception: true)
+    end
+
+    # Resolve runtime dependencies from the gems already installed for this Ruby,
+    # so the smoke test does not require network access.
+    env = { "GEM_HOME" => gem_home, "GEM_PATH" => [gem_home, *Gem.path].join(File::PATH_SEPARATOR) }
+    system(env, Gem.ruby, "-S", "gem", "install", "--local", "--no-document", package, exception: true)
+    system(env, Gem.ruby, "-e", smoke, chdir: dir, exception: true)
+  end
+rescue RuntimeError => e
+  abort "smoke test failed: #{e.message}"
+end
