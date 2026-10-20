@@ -21,7 +21,7 @@ RSpec.describe Fineract::Api::Loans::CreateLoan do
       result = described_class.create(
         clientId: 1,
         productId: 1,
-        principal: 10000,
+        principal: 10_000,
         loanTermFrequency: 12,
         loanTermFrequencyType: 2,
         numberOfRepayments: 12,
